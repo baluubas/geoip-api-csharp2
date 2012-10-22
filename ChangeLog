@@ -1,3 +1,4 @@
+	- Add NetSpeedCell example ( Boris Zentner )
 	- Fix garbage at the end of the database_type string ( Boris Zentner )
 1.17	Apr 10th, 2012
 	- Update FIPS codes ( Boris Zentner )

@@ -29,6 +29,9 @@ mono /usr/local/bin/mcs.exe orgExample.cs Country.cs DatabaseInfo.cs Location.cs
 For domain example
 mono /usr/local/bin/mcs.exe domainExample.cs Country.cs DatabaseInfo.cs Location.cs LookupService.cs Region.cs RegionName.cs
 
+For netspeedCell example
+mono /usr/local/bin/mcs.exe netspeedCellExample.cs Country.cs DatabaseInfo.cs Location.cs LookupService.cs Region.cs RegionName.cs
+
 To run the examples:
 
 for country example
