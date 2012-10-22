@@ -1,3 +1,6 @@
+	- LookupService throws an exception if the database file is not found. ( Guenter Knauf )
+	- Cleanup the example files ( Guenter Knauf )
+	- Add new example infoExample.cs ( Guenter Knauf )
 	- Fix garbage at the end of the database_type string ( Boris Zentner )
 1.17	Apr 10th, 2012
 	- Update FIPS codes ( Boris Zentner )
