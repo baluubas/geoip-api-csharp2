@@ -27,7 +27,7 @@ namespace GeoIP
 {
     public class LookupService
     {
-        private FileStream _file;
+        private DbReader _dbReader;
         private DatabaseInfo _databaseInfo;
         private readonly Object _ioLock = new Object();
         private byte _databaseType = Convert.ToByte(DatabaseTypeCodes.COUNTRY_EDITION);
@@ -44,7 +44,7 @@ namespace GeoIP
             {
                 lock (_ioLock)
                 {
-                    _file = new FileStream(databaseFile, FileMode.Open, FileAccess.Read);
+                    _dbReader = new DbReader(new FileStream(databaseFile, FileMode.Open, FileAccess.Read));
                 }
                 _dboptions = options;
                 Init();
@@ -69,14 +69,14 @@ namespace GeoIP
        
             lock (_ioLock)
             {
-                _file.Seek(-3, SeekOrigin.End);
+                _dbReader.Seek(-3, SeekOrigin.End);
                 int i;
                 for (i = 0; i < DbFlags.STRUCTURE_INFO_MAX_SIZE; i++)
                 {
-                    _file.Read(delim, 0, 3);
+                    _dbReader.Read(delim, 0, 3);
                     if (delim[0] == 255 && delim[1] == 255 && delim[2] == 255)
                     {
-                        _databaseType = Convert.ToByte(_file.ReadByte());
+                        _databaseType = Convert.ToByte(_dbReader.ReadByte());
                         if (_databaseType >= 106)
                         {
                             // Backward compatibility with databases from April 2003 and earlier
@@ -127,7 +127,7 @@ namespace GeoIP
                             {
                                 _recordLength = DbFlags.ORG_RECORD_LENGTH;
                             }
-                            _file.Read(buf, 0, DbFlags.SEGMENT_RECORD_LENGTH);
+                            _dbReader.Read(buf, 0, DbFlags.SEGMENT_RECORD_LENGTH);
                             int j;
                             for (j = 0; j < DbFlags.SEGMENT_RECORD_LENGTH; j++)
                             {
@@ -136,8 +136,8 @@ namespace GeoIP
                         }
                         break;
                     }
-                    
-                    _file.Seek(-4, SeekOrigin.Current);
+
+                    _dbReader.Seek(-4, SeekOrigin.Current);
                 }
                 if ((_databaseType == DatabaseTypeCodes.COUNTRY_EDITION) ||
                     (_databaseType == DatabaseTypeCodes.COUNTRY_EDITION_V6) ||
@@ -153,10 +153,10 @@ namespace GeoIP
                     return;
                 }
 
-                int l = (int) _file.Length;
+                int l = (int)_dbReader.Length;
                 _dbbuffer = new byte[l];
-                _file.Seek(0, SeekOrigin.Begin);
-                _file.Read(_dbbuffer, 0, l);
+                _dbReader.Seek(0, SeekOrigin.Begin);
+                _dbReader.Read(_dbbuffer, 0, l);
             }
         }
 
@@ -164,9 +164,9 @@ namespace GeoIP
         {
             lock (_ioLock)
             {
-                _file.Close();
+                _dbReader.Close();
             }
-            _file = null;
+            _dbReader = null;
         }
 
         public Country GetCountry(IPAddress ipAddress)
@@ -209,7 +209,7 @@ namespace GeoIP
 
         public Country GetCountryV6(IPAddress ipAddress)
         {
-            if (_file == null)
+            if (_dbReader == null)
             {
                 //throw new IllegalStateException("Database has been closed.");
                 throw new Exception("Database has been closed.");
@@ -236,7 +236,7 @@ namespace GeoIP
 
         public Country GetCountry(long ipAddress)
         {
-            if (_file == null)
+            if (_dbReader == null)
             {
                 //throw new IllegalStateException("Database has been closed.");
                 throw new Exception("Database has been closed.");
@@ -286,7 +286,7 @@ namespace GeoIP
 
         public int GetId(long ipAddress)
         {
-            if (_file == null)
+            if (_dbReader == null)
             {
                 throw new Exception("Database has been closed.");
             }
@@ -308,35 +308,35 @@ namespace GeoIP
                     bool hasStructureInfo = false;
                     byte[] delim = new byte[3];
                     // Advance to part of file where database info is stored.
-                    _file.Seek(-3, SeekOrigin.End);
+                    _dbReader.Seek(-3, SeekOrigin.End);
                     for (int i = 0; i < DbFlags.STRUCTURE_INFO_MAX_SIZE; i++)
                     {
-                        _file.Read(delim, 0, 3);
+                        _dbReader.Read(delim, 0, 3);
                         if (delim[0] == 255 && delim[1] == 255 && delim[2] == 255)
                         {
                             hasStructureInfo = true;
                             break;
                         }
-                        _file.Seek(-4, SeekOrigin.Current);
+                        _dbReader.Seek(-4, SeekOrigin.Current);
                     }
                     if (hasStructureInfo)
                     {
-                        _file.Seek(-6, SeekOrigin.Current);
+                        _dbReader.Seek(-6, SeekOrigin.Current);
                     }
                     else
                     {
                         // No structure info, must be pre Sep 2002 database, go back to end.
-                        _file.Seek(-3, SeekOrigin.End);
+                        _dbReader.Seek(-3, SeekOrigin.End);
                     }
                     // Find the database info string.
                     for (int i = 0; i < DbFlags.DATABASE_INFO_MAX_SIZE; i++)
                     {
-                        _file.Read(delim, 0, 3);
+                        _dbReader.Read(delim, 0, 3);
                         if (delim[0] == 0 && delim[1] == 0 && delim[2] == 0)
                         {
                             byte[] dbInfo = new byte[i];
                             char[] dbInfo2 = new char[i];
-                            _file.Read(dbInfo, 0, i);
+                            _dbReader.Read(dbInfo, 0, i);
                             for (int a0 = 0; a0 < i; a0++)
                             {
                                 dbInfo2[a0] = Convert.ToChar(dbInfo[a0]);
@@ -345,7 +345,7 @@ namespace GeoIP
                             _databaseInfo = new DatabaseInfo(new String(dbInfo2));
                             return _databaseInfo;
                         }
-                        _file.Seek(-4, SeekOrigin.Current);
+                        _dbReader.Seek(-4, SeekOrigin.Current);
                     }
                 }
             }
@@ -501,8 +501,8 @@ namespace GeoIP
                 {
                     lock (_ioLock)
                     {
-                        _file.Seek(recordPointer, SeekOrigin.Begin);
-                        _file.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
+                        _dbReader.Seek(recordPointer, SeekOrigin.Begin);
+                        _dbReader.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
                     }
                 }
                 for (int a0 = 0; a0 < DbFlags.FULL_RECORD_LENGTH; a0++)
@@ -609,8 +609,8 @@ namespace GeoIP
                 {
                     lock (_ioLock)
                     {
-                        _file.Seek(recordPointer, SeekOrigin.Begin);
-                        _file.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
+                        _dbReader.Seek(recordPointer, SeekOrigin.Begin);
+                        _dbReader.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
                     }
                 }
                 for (int a0 = 0; a0 < DbFlags.FULL_RECORD_LENGTH; a0++)
@@ -749,8 +749,8 @@ namespace GeoIP
                 {
                     lock (_ioLock)
                     {
-                        _file.Seek(recordPointer, SeekOrigin.Begin);
-                        _file.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
+                        _dbReader.Seek(recordPointer, SeekOrigin.Begin);
+                        _dbReader.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
                     }
                 }
                 while (buf[strLength] != 0)
@@ -794,8 +794,8 @@ namespace GeoIP
                 {
                     lock (_ioLock)
                     {
-                        _file.Seek(recordPointer, SeekOrigin.Begin);
-                        _file.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
+                        _dbReader.Seek(recordPointer, SeekOrigin.Begin);
+                        _dbReader.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
                     }
                 }
                 while (buf[strLength] != 0)
@@ -836,8 +836,8 @@ namespace GeoIP
                     {
                         lock (_ioLock)
                         {
-                            _file.Seek(2*_recordLength*offset, SeekOrigin.Begin);
-                            _file.Read(buf, 0, 2*DbFlags.MAX_RECORD_LENGTH);
+                            _dbReader.Seek(2 * _recordLength * offset, SeekOrigin.Begin);
+                            _dbReader.Read(buf, 0, 2 * DbFlags.MAX_RECORD_LENGTH);
                         }
                     }
                 }
@@ -908,8 +908,8 @@ namespace GeoIP
                     {
                         lock (_ioLock)
                         {
-                            _file.Seek(2*_recordLength*offset, SeekOrigin.Begin);
-                            _file.Read(buf, 0, 2*DbFlags.MAX_RECORD_LENGTH);
+                            _dbReader.Seek(2 * _recordLength * offset, SeekOrigin.Begin);
+                            _dbReader.Read(buf, 0, 2 * DbFlags.MAX_RECORD_LENGTH);
                         }
                     }
                 }
