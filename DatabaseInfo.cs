@@ -21,7 +21,7 @@ using System;
 
 namespace GeoIP
 {
-    public class DatabaseInfo
+    public class DatabaseTypeCodes
     {
         public const int COUNTRY_EDITION = 1;
         public const int REGION_EDITION_REV0 = 7;
@@ -43,7 +43,10 @@ namespace GeoIP
         public const int CITY_EDITION_REV0_V6 = 31;
         public const int NETSPEED_EDITION_REV1 = 32;
         public const int NETSPEED_EDITION_REV1_V6 = 33;
+    }
 
+    public class DatabaseInfo
+    {
         private readonly String _info;
 
         /**
@@ -59,7 +62,7 @@ namespace GeoIP
         {
             if ((_info == null) | (_info == ""))
             {
-                return COUNTRY_EDITION;
+                return DatabaseTypeCodes.COUNTRY_EDITION;
             }
             else
             {
