@@ -43,6 +43,7 @@
     <Compile Include="DatabaseInfo.cs" />
     <Compile Include="DatabaseTypeCodes.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="LookupOptions.cs" />
     <Compile Include="LookupService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Region.cs" />

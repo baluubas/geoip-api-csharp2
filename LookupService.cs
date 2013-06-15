@@ -24,16 +24,6 @@ using System.Runtime.CompilerServices;
 
 namespace GeoIP
 {
-    public class LookupOptions
-    {
-        public static int GEOIP_STANDARD = 0;
-        public static int GEOIP_MEMORY_CACHE = 1;
-        public static int GEOIP_UNKNOWN_SPEED = 0;
-        public static int GEOIP_DIALUP_SPEED = 1;
-        public static int GEOIP_CABLEDSL_SPEED = 2;
-        public static int GEOIP_CORPORATE_SPEED = 3;
-    }
-
     public class LookupService
     {
         private FileStream _file;
@@ -42,113 +32,10 @@ namespace GeoIP
         private byte _databaseType = Convert.ToByte(DatabaseTypeCodes.COUNTRY_EDITION);
         private int[] _databaseSegments;
         private int _recordLength;
-        private readonly int dboptions;
+        private readonly int _dboptions;
         private byte[] _dbbuffer;
 
-        private static Country UNKNOWN_COUNTRY = new Country("--", "N/A");
-        private static int COUNTRY_BEGIN = 16776960;
-        private static int STATE_BEGIN = 16700000;
-        private static int STRUCTURE_INFO_MAX_SIZE = 20;
-        private static int DATABASE_INFO_MAX_SIZE = 100;
-        private static int FULL_RECORD_LENGTH = 100; //???
-        private static int SEGMENT_RECORD_LENGTH = 3;
-        private static int STANDARD_RECORD_LENGTH = 3;
-        private static int ORG_RECORD_LENGTH = 4;
-        private static int MAX_RECORD_LENGTH = 4;
-        private static int MAX_ORG_RECORD_LENGTH = 1000; //???
-        private static int FIPS_RANGE = 360;
-        private static int STATE_BEGIN_REV0 = 16700000;
-        private static int STATE_BEGIN_REV1 = 16000000;
-        private static int US_OFFSET = 1;
-        private static int CANADA_OFFSET = 677;
-        private static int WORLD_OFFSET = 1353;
-
-
-        private static readonly String[] CountryCode =
-            {
-                "--", "AP", "EU", "AD", "AE", "AF", "AG", "AI", "AL", "AM", "CW",
-                "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AZ", "BA", "BB",
-                "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BM", "BN", "BO",
-                "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD",
-                "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR",
-                "CU", "CV", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO",
-                "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ",
-                "FK", "FM", "FO", "FR", "SX", "GA", "GB", "GD", "GE", "GF",
-                "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT",
-                "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID",
-                "IE", "IL", "IN", "IO", "IQ", "IR", "IS", "IT", "JM", "JO",
-                "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW",
-                "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT",
-                "LU", "LV", "LY", "MA", "MC", "MD", "MG", "MH", "MK", "ML",
-                "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV",
-                "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI",
-                "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF",
-                "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW",
-                "PY", "QA", "RE", "RO", "RU", "RW", "SA", "SB", "SC", "SD",
-                "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO",
-                "SR", "ST", "SV", "SY", "SZ", "TC", "TD", "TF", "TG", "TH",
-                "TJ", "TK", "TM", "TN", "TO", "TL", "TR", "TT", "TV", "TW",
-                "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE",
-                "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "RS", "ZA",
-                "ZM", "ME", "ZW", "A1", "A2", "O1", "AX", "GG", "IM", "JE",
-                "BL", "MF", "BQ", "SS", "O1"
-            };
-
-        private static readonly String[] CountryName =
-            {
-                "N/A", "Asia/Pacific Region", "Europe", "Andorra", "United Arab Emirates", "Afghanistan",
-                "Antigua and Barbuda", "Anguilla", "Albania", "Armenia", "Curacao",
-                "Angola", "Antarctica", "Argentina", "American Samoa", "Austria", "Australia", "Aruba", "Azerbaijan",
-                "Bosnia and Herzegovina", "Barbados",
-                "Bangladesh", "Belgium", "Burkina Faso", "Bulgaria", "Bahrain", "Burundi", "Benin", "Bermuda",
-                "Brunei Darussalam", "Bolivia",
-                "Brazil", "Bahamas", "Bhutan", "Bouvet Island", "Botswana", "Belarus", "Belize", "Canada",
-                "Cocos (Keeling) Islands", "Congo, The Democratic Republic of the",
-                "Central African Republic", "Congo", "Switzerland", "Cote D'Ivoire", "Cook Islands", "Chile", "Cameroon"
-                , "China", "Colombia", "Costa Rica",
-                "Cuba", "Cape Verde", "Christmas Island", "Cyprus", "Czech Republic", "Germany", "Djibouti", "Denmark",
-                "Dominica", "Dominican Republic",
-                "Algeria", "Ecuador", "Estonia", "Egypt", "Western Sahara", "Eritrea", "Spain", "Ethiopia", "Finland",
-                "Fiji",
-                "Falkland Islands (Malvinas)", "Micronesia, Federated States of", "Faroe Islands", "France",
-                "Sint Maarten (Dutch part)", "Gabon", "United Kingdom", "Grenada", "Georgia", "French Guiana",
-                "Ghana", "Gibraltar", "Greenland", "Gambia", "Guinea", "Guadeloupe", "Equatorial Guinea", "Greece",
-                "South Georgia and the South Sandwich Islands", "Guatemala",
-                "Guam", "Guinea-Bissau", "Guyana", "Hong Kong", "Heard Island and McDonald Islands", "Honduras",
-                "Croatia", "Haiti", "Hungary", "Indonesia",
-                "Ireland", "Israel", "India", "British Indian Ocean Territory", "Iraq", "Iran, Islamic Republic of",
-                "Iceland", "Italy", "Jamaica", "Jordan",
-                "Japan", "Kenya", "Kyrgyzstan", "Cambodia", "Kiribati", "Comoros", "Saint Kitts and Nevis",
-                "Korea, Democratic People's Republic of", "Korea, Republic of", "Kuwait",
-                "Cayman Islands", "Kazakhstan", "Lao People's Democratic Republic", "Lebanon", "Saint Lucia",
-                "Liechtenstein", "Sri Lanka", "Liberia", "Lesotho", "Lithuania",
-                "Luxembourg", "Latvia", "Libya", "Morocco", "Monaco", "Moldova, Republic of", "Madagascar",
-                "Marshall Islands", "Macedonia", "Mali",
-                "Myanmar", "Mongolia", "Macau", "Northern Mariana Islands", "Martinique", "Mauritania", "Montserrat",
-                "Malta", "Mauritius", "Maldives",
-                "Malawi", "Mexico", "Malaysia", "Mozambique", "Namibia", "New Caledonia", "Niger", "Norfolk Island",
-                "Nigeria", "Nicaragua",
-                "Netherlands", "Norway", "Nepal", "Nauru", "Niue", "New Zealand", "Oman", "Panama", "Peru",
-                "French Polynesia",
-                "Papua New Guinea", "Philippines", "Pakistan", "Poland", "Saint Pierre and Miquelon", "Pitcairn Islands"
-                , "Puerto Rico", "Palestinian Territory", "Portugal", "Palau",
-                "Paraguay", "Qatar", "Reunion", "Romania", "Russian Federation", "Rwanda", "Saudi Arabia",
-                "Solomon Islands", "Seychelles", "Sudan",
-                "Sweden", "Singapore", "Saint Helena", "Slovenia", "Svalbard and Jan Mayen", "Slovakia", "Sierra Leone",
-                "San Marino", "Senegal", "Somalia", "Suriname",
-                "Sao Tome and Principe", "El Salvador", "Syrian Arab Republic", "Swaziland", "Turks and Caicos Islands",
-                "Chad", "French Southern Territories", "Togo", "Thailand",
-                "Tajikistan", "Tokelau", "Turkmenistan", "Tunisia", "Tonga", "Timor-Leste", "Turkey",
-                "Trinidad and Tobago", "Tuvalu", "Taiwan",
-                "Tanzania, United Republic of", "Ukraine", "Uganda", "United States Minor Outlying Islands",
-                "United States", "Uruguay", "Uzbekistan", "Holy See (Vatican City State)",
-                "Saint Vincent and the Grenadines", "Venezuela",
-                "Virgin Islands, British", "Virgin Islands, U.S.", "Vietnam", "Vanuatu", "Wallis and Futuna", "Samoa",
-                "Yemen", "Mayotte", "Serbia", "South Africa",
-                "Zambia", "Montenegro", "Zimbabwe", "Anonymous Proxy", "Satellite Provider", "Other", "Aland Islands",
-                "Guernsey", "Isle of Man", "Jersey",
-                "Saint Barthelemy", "Saint Martin", "Bonaire, Saint Eustatius and Saba", "South Sudan", "Other"
-            };
+        private static readonly Country UNKNOWN_COUNTRY = new Country("--", "N/A");
 
         public LookupService(String databaseFile, int options)
         {
@@ -156,9 +43,9 @@ namespace GeoIP
             {
                 lock (_ioLock)
                 {
-                    this._file = new FileStream(databaseFile, FileMode.Open, FileAccess.Read);
+                    _file = new FileStream(databaseFile, FileMode.Open, FileAccess.Read);
                 }
-                dboptions = options;
+                _dboptions = options;
                 Init();
             }
             catch (System.SystemException)
@@ -176,14 +63,14 @@ namespace GeoIP
         {
             int i, j;
             byte[] delim = new byte[3];
-            byte[] buf = new byte[SEGMENT_RECORD_LENGTH];
+            byte[] buf = new byte[DbFlags.SEGMENT_RECORD_LENGTH];
             _databaseType = (byte) DatabaseTypeCodes.COUNTRY_EDITION;
-            _recordLength = STANDARD_RECORD_LENGTH;
+            _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
             //file.Seek(file.Length() - 3,SeekOrigin.Begin);
             lock (_ioLock)
             {
                 _file.Seek(-3, SeekOrigin.End);
-                for (i = 0; i < STRUCTURE_INFO_MAX_SIZE; i++)
+                for (i = 0; i < DbFlags.STRUCTURE_INFO_MAX_SIZE; i++)
                 {
                     _file.Read(delim, 0, 3);
                     if (delim[0] == 255 && delim[1] == 255 && delim[2] == 255)
@@ -198,14 +85,14 @@ namespace GeoIP
                         if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV0)
                         {
                             _databaseSegments = new int[1];
-                            _databaseSegments[0] = STATE_BEGIN_REV0;
-                            _recordLength = STANDARD_RECORD_LENGTH;
+                            _databaseSegments[0] = DbFlags.STATE_BEGIN_REV0;
+                            _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
                         }
                         else if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV1)
                         {
                             _databaseSegments = new int[1];
-                            _databaseSegments[0] = STATE_BEGIN_REV1;
-                            _recordLength = STANDARD_RECORD_LENGTH;
+                            _databaseSegments[0] = DbFlags.STATE_BEGIN_REV1;
+                            _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
                         }
                         else if (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV0 ||
                                  _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1 ||
@@ -233,14 +120,14 @@ namespace GeoIP
                                 _databaseType == DatabaseTypeCodes.ASNUM_EDITION
                                 )
                             {
-                                _recordLength = STANDARD_RECORD_LENGTH;
+                                _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
                             }
                             else
                             {
-                                _recordLength = ORG_RECORD_LENGTH;
+                                _recordLength = DbFlags.ORG_RECORD_LENGTH;
                             }
-                            _file.Read(buf, 0, SEGMENT_RECORD_LENGTH);
-                            for (j = 0; j < SEGMENT_RECORD_LENGTH; j++)
+                            _file.Read(buf, 0, DbFlags.SEGMENT_RECORD_LENGTH);
+                            for (j = 0; j < DbFlags.SEGMENT_RECORD_LENGTH; j++)
                             {
                                 _databaseSegments[0] += (UnsignedByteToInt(buf[j]) << (j*8));
                             }
@@ -260,10 +147,10 @@ namespace GeoIP
                     (_databaseType == DatabaseTypeCodes.NETSPEED_EDITION))
                 {
                     _databaseSegments = new int[1];
-                    _databaseSegments[0] = COUNTRY_BEGIN;
-                    _recordLength = STANDARD_RECORD_LENGTH;
+                    _databaseSegments[0] = DbFlags.COUNTRY_BEGIN;
+                    _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
                 }
-                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     int l = (int) _file.Length;
                     _dbbuffer = new byte[l];
@@ -348,14 +235,14 @@ namespace GeoIP
             }
             else
             {
-                int ret = SeekCountryV6(ipAddress) - COUNTRY_BEGIN;
+                int ret = SeekCountryV6(ipAddress) - DbFlags.COUNTRY_BEGIN;
                 if (ret == 0)
                 {
                     return UNKNOWN_COUNTRY;
                 }
                 else
                 {
-                    return new Country(CountryCode[ret], CountryName[ret]);
+                    return new Country(CountryConstants.CountryCodes[ret], CountryConstants.CountryNames[ret]);
                 }
             }
         }
@@ -382,14 +269,14 @@ namespace GeoIP
             }
             else
             {
-                int ret = SeekCountry(ipAddress) - COUNTRY_BEGIN;
+                int ret = SeekCountry(ipAddress) - DbFlags.COUNTRY_BEGIN;
                 if (ret == 0)
                 {
                     return UNKNOWN_COUNTRY;
                 }
                 else
                 {
-                    return new Country(CountryCode[ret], CountryName[ret]);
+                    return new Country(CountryConstants.CountryCodes[ret], CountryConstants.CountryNames[ret]);
                 }
             }
         }
@@ -440,7 +327,7 @@ namespace GeoIP
                     byte[] delim = new byte[3];
                     // Advance to part of file where database info is stored.
                     _file.Seek(-3, SeekOrigin.End);
-                    for (int i = 0; i < STRUCTURE_INFO_MAX_SIZE; i++)
+                    for (int i = 0; i < DbFlags.STRUCTURE_INFO_MAX_SIZE; i++)
                     {
                         _file.Read(delim, 0, 3);
                         if (delim[0] == 255 && delim[1] == 255 && delim[2] == 255)
@@ -460,7 +347,7 @@ namespace GeoIP
                         _file.Seek(-3, SeekOrigin.End);
                     }
                     // Find the database info string.
-                    for (int i = 0; i < DATABASE_INFO_MAX_SIZE; i++)
+                    for (int i = 0; i < DbFlags.DATABASE_INFO_MAX_SIZE; i++)
                     {
                         _file.Read(delim, 0, 3);
                         if (delim[0] == 0 && delim[1] == 0 && delim[2] == 0)
@@ -516,7 +403,7 @@ namespace GeoIP
             int seek_region = 0;
             if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV0)
             {
-                seek_region = SeekCountry(ipnum) - STATE_BEGIN_REV0;
+                seek_region = SeekCountry(ipnum) - DbFlags.STATE_BEGIN_REV0;
                 char[] ch = new char[2];
                 if (seek_region >= 1000)
                 {
@@ -528,41 +415,41 @@ namespace GeoIP
                 }
                 else
                 {
-                    record.CountryCode = CountryCode[seek_region];
-                    record.CountryName = CountryName[seek_region];
+                    record.CountryCode = CountryConstants.CountryCodes[seek_region];
+                    record.CountryName = CountryConstants.CountryNames[seek_region];
                     record.Name = "";
                 }
             }
             else if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV1)
             {
-                seek_region = SeekCountry(ipnum) - STATE_BEGIN_REV1;
+                seek_region = SeekCountry(ipnum) - DbFlags.STATE_BEGIN_REV1;
                 char[] ch = new char[2];
-                if (seek_region < US_OFFSET)
+                if (seek_region < DbFlags.US_OFFSET)
                 {
                     record.CountryCode = "";
                     record.CountryName = "";
                     record.Name = "";
                 }
-                else if (seek_region < CANADA_OFFSET)
+                else if (seek_region < DbFlags.CANADA_OFFSET)
                 {
                     record.CountryCode = "US";
                     record.CountryName = "United States";
-                    ch[0] = (char) (((seek_region - US_OFFSET)/26) + 65);
-                    ch[1] = (char) (((seek_region - US_OFFSET)%26) + 65);
+                    ch[0] = (char) (((seek_region - DbFlags.US_OFFSET)/26) + 65);
+                    ch[1] = (char) (((seek_region - DbFlags.US_OFFSET)%26) + 65);
                     record.Name = new String(ch);
                 }
-                else if (seek_region < WORLD_OFFSET)
+                else if (seek_region < DbFlags.WORLD_OFFSET)
                 {
                     record.CountryCode = "CA";
                     record.CountryName = "Canada";
-                    ch[0] = (char) (((seek_region - CANADA_OFFSET)/26) + 65);
-                    ch[1] = (char) (((seek_region - CANADA_OFFSET)%26) + 65);
+                    ch[0] = (char) (((seek_region - DbFlags.CANADA_OFFSET)/26) + 65);
+                    ch[1] = (char) (((seek_region - DbFlags.CANADA_OFFSET)%26) + 65);
                     record.Name = new String(ch);
                 }
                 else
                 {
-                    record.CountryCode = CountryCode[(seek_region - WORLD_OFFSET)/FIPS_RANGE];
-                    record.CountryName = CountryName[(seek_region - WORLD_OFFSET)/FIPS_RANGE];
+                    record.CountryCode = CountryConstants.CountryCodes[(seek_region - DbFlags.WORLD_OFFSET)/DbFlags.FIPS_RANGE];
+                    record.CountryName = CountryConstants.CountryNames[(seek_region - DbFlags.WORLD_OFFSET)/DbFlags.FIPS_RANGE];
                     record.Name = "";
                 }
             }
@@ -610,8 +497,8 @@ namespace GeoIP
         public Location GetLocationV6(IPAddress addr)
         {
             int record_pointer;
-            byte[] record_buf = new byte[FULL_RECORD_LENGTH];
-            char[] record_buf2 = new char[FULL_RECORD_LENGTH];
+            byte[] record_buf = new byte[DbFlags.FULL_RECORD_LENGTH];
+            char[] record_buf2 = new char[DbFlags.FULL_RECORD_LENGTH];
             int record_buf_offset = 0;
             Location record = new Location();
             int str_length = 0;
@@ -626,26 +513,26 @@ namespace GeoIP
                     return null;
                 }
                 record_pointer = Seek_country + ((2*_recordLength - 1)*_databaseSegments[0]);
-                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     Array.Copy(_dbbuffer, record_pointer, record_buf, 0,
-                               Math.Min(_dbbuffer.Length - record_pointer, FULL_RECORD_LENGTH));
+                               Math.Min(_dbbuffer.Length - record_pointer, DbFlags.FULL_RECORD_LENGTH));
                 }
                 else
                 {
                     lock (_ioLock)
                     {
                         _file.Seek(record_pointer, SeekOrigin.Begin);
-                        _file.Read(record_buf, 0, FULL_RECORD_LENGTH);
+                        _file.Read(record_buf, 0, DbFlags.FULL_RECORD_LENGTH);
                     }
                 }
-                for (int a0 = 0; a0 < FULL_RECORD_LENGTH; a0++)
+                for (int a0 = 0; a0 < DbFlags.FULL_RECORD_LENGTH; a0++)
                 {
                     record_buf2[a0] = Convert.ToChar(record_buf[a0]);
                 }
                 // get country
-                record.CountryCode = CountryCode[UnsignedByteToInt(record_buf[0])];
-                record.CountryName = CountryName[UnsignedByteToInt(record_buf[0])];
+                record.CountryCode = CountryConstants.CountryCodes[UnsignedByteToInt(record_buf[0])];
+                record.CountryName = CountryConstants.CountryNames[UnsignedByteToInt(record_buf[0])];
                 record_buf_offset++;
 
                 // get region
@@ -719,8 +606,8 @@ namespace GeoIP
         public Location GetLocation(long ipnum)
         {
             int record_pointer;
-            byte[] record_buf = new byte[FULL_RECORD_LENGTH];
-            char[] record_buf2 = new char[FULL_RECORD_LENGTH];
+            byte[] record_buf = new byte[DbFlags.FULL_RECORD_LENGTH];
+            char[] record_buf2 = new char[DbFlags.FULL_RECORD_LENGTH];
             int record_buf_offset = 0;
             Location record = new Location();
             int str_length = 0;
@@ -735,26 +622,26 @@ namespace GeoIP
                     return null;
                 }
                 record_pointer = Seek_country + ((2*_recordLength - 1)*_databaseSegments[0]);
-                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     Array.Copy(_dbbuffer, record_pointer, record_buf, 0,
-                               Math.Min(_dbbuffer.Length - record_pointer, FULL_RECORD_LENGTH));
+                               Math.Min(_dbbuffer.Length - record_pointer, DbFlags.FULL_RECORD_LENGTH));
                 }
                 else
                 {
                     lock (_ioLock)
                     {
                         _file.Seek(record_pointer, SeekOrigin.Begin);
-                        _file.Read(record_buf, 0, FULL_RECORD_LENGTH);
+                        _file.Read(record_buf, 0, DbFlags.FULL_RECORD_LENGTH);
                     }
                 }
-                for (int a0 = 0; a0 < FULL_RECORD_LENGTH; a0++)
+                for (int a0 = 0; a0 < DbFlags.FULL_RECORD_LENGTH; a0++)
                 {
                     record_buf2[a0] = Convert.ToChar(record_buf[a0]);
                 }
                 // get country
-                record.CountryCode = CountryCode[UnsignedByteToInt(record_buf[0])];
-                record.CountryName = CountryName[UnsignedByteToInt(record_buf[0])];
+                record.CountryCode = CountryConstants.CountryCodes[UnsignedByteToInt(record_buf[0])];
+                record.CountryName = CountryConstants.CountryNames[UnsignedByteToInt(record_buf[0])];
                 record_buf_offset++;
 
                 // get region
@@ -866,8 +753,8 @@ namespace GeoIP
             int Seek_org;
             int record_pointer;
             int str_length = 0;
-            byte[] buf = new byte[MAX_ORG_RECORD_LENGTH];
-            char[] buf2 = new char[MAX_ORG_RECORD_LENGTH];
+            byte[] buf = new byte[DbFlags.MAX_ORG_RECORD_LENGTH];
+            char[] buf2 = new char[DbFlags.MAX_ORG_RECORD_LENGTH];
             String org_buf;
 
             try
@@ -879,17 +766,17 @@ namespace GeoIP
                 }
 
                 record_pointer = Seek_org + (2*_recordLength - 1)*_databaseSegments[0];
-                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     Array.Copy(_dbbuffer, record_pointer, buf, 0,
-                               Math.Min(_dbbuffer.Length - record_pointer, MAX_ORG_RECORD_LENGTH));
+                               Math.Min(_dbbuffer.Length - record_pointer, DbFlags.MAX_ORG_RECORD_LENGTH));
                 }
                 else
                 {
                     lock (_ioLock)
                     {
                         _file.Seek(record_pointer, SeekOrigin.Begin);
-                        _file.Read(buf, 0, MAX_ORG_RECORD_LENGTH);
+                        _file.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
                     }
                 }
                 while (buf[str_length] != 0)
@@ -914,8 +801,8 @@ namespace GeoIP
             int Seek_org;
             int record_pointer;
             int str_length = 0;
-            byte[] buf = new byte[MAX_ORG_RECORD_LENGTH];
-            char[] buf2 = new char[MAX_ORG_RECORD_LENGTH];
+            byte[] buf = new byte[DbFlags.MAX_ORG_RECORD_LENGTH];
+            char[] buf2 = new char[DbFlags.MAX_ORG_RECORD_LENGTH];
             String org_buf;
 
             try
@@ -927,17 +814,17 @@ namespace GeoIP
                 }
 
                 record_pointer = Seek_org + (2*_recordLength - 1)*_databaseSegments[0];
-                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     Array.Copy(_dbbuffer, record_pointer, buf, 0,
-                               Math.Min(_dbbuffer.Length - record_pointer, MAX_ORG_RECORD_LENGTH));
+                               Math.Min(_dbbuffer.Length - record_pointer, DbFlags.MAX_ORG_RECORD_LENGTH));
                 }
                 else
                 {
                     lock (_ioLock)
                     {
                         _file.Seek(record_pointer, SeekOrigin.Begin);
-                        _file.Read(buf, 0, MAX_ORG_RECORD_LENGTH);
+                        _file.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
                     }
                 }
                 while (buf[str_length] != 0)
@@ -960,16 +847,16 @@ namespace GeoIP
         private int SeekCountryV6(IPAddress ipAddress)
         {
             byte[] v6vec = ipAddress.GetAddressBytes();
-            byte[] buf = new byte[2*MAX_RECORD_LENGTH];
+            byte[] buf = new byte[2*DbFlags.MAX_RECORD_LENGTH];
             int[] x = new int[2];
             int offset = 0;
             for (int depth = 127; depth >= 0; depth--)
             {
                 try
                 {
-                    if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                    if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                     {
-                        for (int i = 0; i < (2*MAX_RECORD_LENGTH); i++)
+                        for (int i = 0; i < (2*DbFlags.MAX_RECORD_LENGTH); i++)
                         {
                             buf[i] = _dbbuffer[i + (2*_recordLength*offset)];
                         }
@@ -979,7 +866,7 @@ namespace GeoIP
                         lock (_ioLock)
                         {
                             _file.Seek(2*_recordLength*offset, SeekOrigin.Begin);
-                            _file.Read(buf, 0, 2*MAX_RECORD_LENGTH);
+                            _file.Read(buf, 0, 2*DbFlags.MAX_RECORD_LENGTH);
                         }
                     }
                 }
@@ -1032,16 +919,16 @@ namespace GeoIP
         [MethodImpl(MethodImplOptions.Synchronized)]
         private int SeekCountry(long ipAddress)
         {
-            byte[] buf = new byte[2*MAX_RECORD_LENGTH];
+            byte[] buf = new byte[2*DbFlags.MAX_RECORD_LENGTH];
             int[] x = new int[2];
             int offset = 0;
             for (int depth = 31; depth >= 0; depth--)
             {
                 try
                 {
-                    if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                    if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                     {
-                        for (int i = 0; i < (2*MAX_RECORD_LENGTH); i++)
+                        for (int i = 0; i < (2*DbFlags.MAX_RECORD_LENGTH); i++)
                         {
                             buf[i] = _dbbuffer[i + (2*_recordLength*offset)];
                         }
@@ -1051,7 +938,7 @@ namespace GeoIP
                         lock (_ioLock)
                         {
                             _file.Seek(2*_recordLength*offset, SeekOrigin.Begin);
-                            _file.Read(buf, 0, 2*MAX_RECORD_LENGTH);
+                            _file.Read(buf, 0, 2*DbFlags.MAX_RECORD_LENGTH);
                         }
                     }
                 }
