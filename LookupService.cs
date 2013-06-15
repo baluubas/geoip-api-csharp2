@@ -161,17 +161,11 @@ namespace GeoIP
 
         public void Close()
         {
-            try
+            lock (_ioLock)
             {
-                lock (_ioLock)
-                {
-                    _file.Close();
-                }
-                _file = null;
+                _file.Close();
             }
-            catch (Exception)
-            {
-            }
+            _file = null;
         }
 
         public Country GetCountry(IPAddress ipAddress)
