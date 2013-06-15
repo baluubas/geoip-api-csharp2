@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -50,7 +51,7 @@ namespace GeoIP
             }
             catch (SystemException)
             {
-                Console.Write("cannot open file " + databaseFile + "\n");
+                Trace.WriteLine("cannot open file " + databaseFile + "\n");
             }
         }
 
@@ -183,7 +184,7 @@ namespace GeoIP
              
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
                 return UnknownCountry;
             }
             return GetCountryV6(addr);
@@ -199,7 +200,7 @@ namespace GeoIP
                 //catch (UnknownHostException e) {
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
                 return UnknownCountry;
             }
             //  return getCountry(bytestoLong(addr.GetAddressBytes()));
@@ -271,7 +272,7 @@ namespace GeoIP
             }
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
                 return 0;
             }
             return GetId(BytestoLong(addr.GetAddressBytes()));
@@ -350,7 +351,7 @@ namespace GeoIP
             }
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
             }
             return new DatabaseInfo("");
         }
@@ -369,7 +370,7 @@ namespace GeoIP
             }
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
                 return null;
             }
 
@@ -450,7 +451,7 @@ namespace GeoIP
             }
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
                 return null;
             }
 
@@ -466,7 +467,7 @@ namespace GeoIP
             }
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
                 return null;
             }
 
@@ -576,7 +577,7 @@ namespace GeoIP
             }
             catch (IOException)
             {
-                Console.Write("IO Exception while seting up segments");
+                Trace.WriteLine("IO Exception while seting up segments");
             }
             return record;
         }
@@ -683,7 +684,7 @@ namespace GeoIP
             }
             catch (IOException)
             {
-                Console.Write("IO Exception while seting up segments");
+                Trace.WriteLine("IO Exception while seting up segments");
             }
             return record;
         }
@@ -702,7 +703,7 @@ namespace GeoIP
             }
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
                 return null;
             }
             return GetOrgV6(addr);
@@ -717,7 +718,7 @@ namespace GeoIP
             }
             catch (Exception e)
             {
-                Console.Write(e.Message);
+                Trace.WriteLine(e.Message);
                 return null;
             }
             return GetOrg(BytestoLong(addr.GetAddressBytes()));
@@ -763,7 +764,7 @@ namespace GeoIP
             }
             catch (IOException)
             {
-                Console.Write("IO Exception");
+                Trace.WriteLine("IO Exception");
                 return null;
             }
         }
@@ -808,7 +809,7 @@ namespace GeoIP
             }
             catch (IOException)
             {
-                Console.Write("IO Exception");
+                Trace.WriteLine("IO Exception");
                 return null;
             }
         }
@@ -842,7 +843,7 @@ namespace GeoIP
                 }
                 catch (IOException)
                 {
-                    Console.Write("IO Exception");
+                    Trace.WriteLine("IO Exception");
                 }
                 for (int i = 0; i < 2; i++)
                 {
@@ -881,7 +882,7 @@ namespace GeoIP
             }
 
             // shouldn't reach here
-            Console.Write("Error Seeking country while Seeking " + ipAddress);
+            Trace.WriteLine("Error Seeking country while Seeking " + ipAddress);
             return 0;
 
         }
@@ -914,7 +915,7 @@ namespace GeoIP
                 }
                 catch (IOException)
                 {
-                    Console.Write("IO Exception");
+                    Trace.WriteLine("IO Exception");
                 }
                 for (int i = 0; i < 2; i++)
                 {
@@ -949,7 +950,7 @@ namespace GeoIP
             }
 
             // shouldn't reach here
-            Console.Write("Error Seeking country while Seeking " + ipAddress);
+            Trace.WriteLine("Error Seeking country while Seeking " + ipAddress);
             return 0;
 
         }
