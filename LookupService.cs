@@ -24,12 +24,22 @@ using System.Runtime.CompilerServices;
 
 namespace GeoIP
 {
+    public class LookupOptions
+    {
+        public static int GEOIP_STANDARD = 0;
+        public static int GEOIP_MEMORY_CACHE = 1;
+        public static int GEOIP_UNKNOWN_SPEED = 0;
+        public static int GEOIP_DIALUP_SPEED = 1;
+        public static int GEOIP_CABLEDSL_SPEED = 2;
+        public static int GEOIP_CORPORATE_SPEED = 3;
+    }
+
     public class LookupService
     {
         private FileStream _file;
         private DatabaseInfo _databaseInfo;
         private readonly Object _ioLock = new Object();
-        private byte _databaseType = Convert.ToByte(DatabaseInfoTypeCodes.COUNTRY_EDITION);
+        private byte _databaseType = Convert.ToByte(DatabaseTypeCodes.COUNTRY_EDITION);
         private int[] _databaseSegments;
         private int _recordLength;
         private readonly int dboptions;
@@ -52,12 +62,7 @@ namespace GeoIP
         private static int US_OFFSET = 1;
         private static int CANADA_OFFSET = 677;
         private static int WORLD_OFFSET = 1353;
-        public static int GEOIP_STANDARD = 0;
-        public static int GEOIP_MEMORY_CACHE = 1;
-        public static int GEOIP_UNKNOWN_SPEED = 0;
-        public static int GEOIP_DIALUP_SPEED = 1;
-        public static int GEOIP_CABLEDSL_SPEED = 2;
-        public static int GEOIP_CORPORATE_SPEED = 3;
+
 
         private static readonly String[] CountryCode =
             {
@@ -163,7 +168,7 @@ namespace GeoIP
         }
 
         public LookupService(String databaseFile)
-            : this(databaseFile, GEOIP_STANDARD)
+            : this(databaseFile, LookupOptions.GEOIP_STANDARD)
         {
         }
 
@@ -172,7 +177,7 @@ namespace GeoIP
             int i, j;
             byte[] delim = new byte[3];
             byte[] buf = new byte[SEGMENT_RECORD_LENGTH];
-            _databaseType = (byte) DatabaseInfoTypeCodes.COUNTRY_EDITION;
+            _databaseType = (byte) DatabaseTypeCodes.COUNTRY_EDITION;
             _recordLength = STANDARD_RECORD_LENGTH;
             //file.Seek(file.Length() - 3,SeekOrigin.Begin);
             lock (_ioLock)
@@ -190,42 +195,42 @@ namespace GeoIP
                             _databaseType -= 105;
                         }
                         // Determine the database type.
-                        if (_databaseType == DatabaseInfoTypeCodes.REGION_EDITION_REV0)
+                        if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV0)
                         {
                             _databaseSegments = new int[1];
                             _databaseSegments[0] = STATE_BEGIN_REV0;
                             _recordLength = STANDARD_RECORD_LENGTH;
                         }
-                        else if (_databaseType == DatabaseInfoTypeCodes.REGION_EDITION_REV1)
+                        else if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV1)
                         {
                             _databaseSegments = new int[1];
                             _databaseSegments[0] = STATE_BEGIN_REV1;
                             _recordLength = STANDARD_RECORD_LENGTH;
                         }
-                        else if (_databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV0 ||
-                                 _databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1 ||
-                                 _databaseType == DatabaseInfoTypeCodes.ORG_EDITION ||
-                                 _databaseType == DatabaseInfoTypeCodes.ORG_EDITION_V6 ||
-                                 _databaseType == DatabaseInfoTypeCodes.ISP_EDITION ||
-                                 _databaseType == DatabaseInfoTypeCodes.ISP_EDITION_V6 ||
-                                 _databaseType == DatabaseInfoTypeCodes.ASNUM_EDITION ||
-                                 _databaseType == DatabaseInfoTypeCodes.ASNUM_EDITION_V6 ||
-                                 _databaseType == DatabaseInfoTypeCodes.NETSPEED_EDITION_REV1 ||
-                                 _databaseType == DatabaseInfoTypeCodes.NETSPEED_EDITION_REV1_V6 ||
-                                 _databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV0_V6 ||
-                                 _databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1_V6
+                        else if (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV0 ||
+                                 _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1 ||
+                                 _databaseType == DatabaseTypeCodes.ORG_EDITION ||
+                                 _databaseType == DatabaseTypeCodes.ORG_EDITION_V6 ||
+                                 _databaseType == DatabaseTypeCodes.ISP_EDITION ||
+                                 _databaseType == DatabaseTypeCodes.ISP_EDITION_V6 ||
+                                 _databaseType == DatabaseTypeCodes.ASNUM_EDITION ||
+                                 _databaseType == DatabaseTypeCodes.ASNUM_EDITION_V6 ||
+                                 _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1 ||
+                                 _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1_V6 ||
+                                 _databaseType == DatabaseTypeCodes.CITY_EDITION_REV0_V6 ||
+                                 _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1_V6
                             )
                         {
                             _databaseSegments = new int[1];
                             _databaseSegments[0] = 0;
-                            if (_databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV0 ||
-                                _databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1 ||
-                                _databaseType == DatabaseInfoTypeCodes.ASNUM_EDITION_V6 ||
-                                _databaseType == DatabaseInfoTypeCodes.NETSPEED_EDITION_REV1 ||
-                                _databaseType == DatabaseInfoTypeCodes.NETSPEED_EDITION_REV1_V6 ||
-                                _databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV0_V6 ||
-                                _databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1_V6 ||
-                                _databaseType == DatabaseInfoTypeCodes.ASNUM_EDITION
+                            if (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV0 ||
+                                _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1 ||
+                                _databaseType == DatabaseTypeCodes.ASNUM_EDITION_V6 ||
+                                _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1 ||
+                                _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1_V6 ||
+                                _databaseType == DatabaseTypeCodes.CITY_EDITION_REV0_V6 ||
+                                _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1_V6 ||
+                                _databaseType == DatabaseTypeCodes.ASNUM_EDITION
                                 )
                             {
                                 _recordLength = STANDARD_RECORD_LENGTH;
@@ -249,16 +254,16 @@ namespace GeoIP
                         //file.Seek(file.position-4,SeekOrigin.Begin);
                     }
                 }
-                if ((_databaseType == DatabaseInfoTypeCodes.COUNTRY_EDITION) ||
-                    (_databaseType == DatabaseInfoTypeCodes.COUNTRY_EDITION_V6) ||
-                    (_databaseType == DatabaseInfoTypeCodes.PROXY_EDITION) ||
-                    (_databaseType == DatabaseInfoTypeCodes.NETSPEED_EDITION))
+                if ((_databaseType == DatabaseTypeCodes.COUNTRY_EDITION) ||
+                    (_databaseType == DatabaseTypeCodes.COUNTRY_EDITION_V6) ||
+                    (_databaseType == DatabaseTypeCodes.PROXY_EDITION) ||
+                    (_databaseType == DatabaseTypeCodes.NETSPEED_EDITION))
                 {
                     _databaseSegments = new int[1];
                     _databaseSegments[0] = COUNTRY_BEGIN;
                     _recordLength = STANDARD_RECORD_LENGTH;
                 }
-                if ((dboptions & GEOIP_MEMORY_CACHE) == 1)
+                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     int l = (int) _file.Length;
                     _dbbuffer = new byte[l];
@@ -328,8 +333,8 @@ namespace GeoIP
                 //throw new IllegalStateException("Database has been closed.");
                 throw new Exception("Database has been closed.");
             }
-            if ((_databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1) |
-                (_databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV0))
+            if ((_databaseType == DatabaseTypeCodes.CITY_EDITION_REV1) |
+                (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV0))
             {
                 Location l = GetLocation(ipAddress);
                 if (l == null)
@@ -362,8 +367,8 @@ namespace GeoIP
                 //throw new IllegalStateException("Database has been closed.");
                 throw new Exception("Database has been closed.");
             }
-            if ((_databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1) |
-                (_databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV0))
+            if ((_databaseType == DatabaseTypeCodes.CITY_EDITION_REV1) |
+                (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV0))
             {
                 Location l = GetLocation(ipAddress);
                 if (l == null)
@@ -509,7 +514,7 @@ namespace GeoIP
         {
             Region record = new Region();
             int seek_region = 0;
-            if (_databaseType == DatabaseInfoTypeCodes.REGION_EDITION_REV0)
+            if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV0)
             {
                 seek_region = SeekCountry(ipnum) - STATE_BEGIN_REV0;
                 char[] ch = new char[2];
@@ -528,7 +533,7 @@ namespace GeoIP
                     record.Name = "";
                 }
             }
-            else if (_databaseType == DatabaseInfoTypeCodes.REGION_EDITION_REV1)
+            else if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV1)
             {
                 seek_region = SeekCountry(ipnum) - STATE_BEGIN_REV1;
                 char[] ch = new char[2];
@@ -621,7 +626,7 @@ namespace GeoIP
                     return null;
                 }
                 record_pointer = Seek_country + ((2*_recordLength - 1)*_databaseSegments[0]);
-                if ((dboptions & GEOIP_MEMORY_CACHE) == 1)
+                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     Array.Copy(_dbbuffer, record_pointer, record_buf, 0,
                                Math.Min(_dbbuffer.Length - record_pointer, FULL_RECORD_LENGTH));
@@ -688,8 +693,8 @@ namespace GeoIP
 
                 record.MetroCode = record.DmaCode = 0;
                 record.AreaCode = 0;
-                if (_databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1
-                    || _databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1_V6)
+                if (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV1
+                    || _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1_V6)
                 {
                     // get metro_code
                     int metroarea_combo = 0;
@@ -730,7 +735,7 @@ namespace GeoIP
                     return null;
                 }
                 record_pointer = Seek_country + ((2*_recordLength - 1)*_databaseSegments[0]);
-                if ((dboptions & GEOIP_MEMORY_CACHE) == 1)
+                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     Array.Copy(_dbbuffer, record_pointer, record_buf, 0,
                                Math.Min(_dbbuffer.Length - record_pointer, FULL_RECORD_LENGTH));
@@ -797,7 +802,7 @@ namespace GeoIP
 
                 record.MetroCode = record.DmaCode = 0;
                 record.AreaCode = 0;
-                if (_databaseType == DatabaseInfoTypeCodes.CITY_EDITION_REV1)
+                if (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV1)
                 {
                     // get metro_code
                     int metroarea_combo = 0;
@@ -874,7 +879,7 @@ namespace GeoIP
                 }
 
                 record_pointer = Seek_org + (2*_recordLength - 1)*_databaseSegments[0];
-                if ((dboptions & GEOIP_MEMORY_CACHE) == 1)
+                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     Array.Copy(_dbbuffer, record_pointer, buf, 0,
                                Math.Min(_dbbuffer.Length - record_pointer, MAX_ORG_RECORD_LENGTH));
@@ -922,7 +927,7 @@ namespace GeoIP
                 }
 
                 record_pointer = Seek_org + (2*_recordLength - 1)*_databaseSegments[0];
-                if ((dboptions & GEOIP_MEMORY_CACHE) == 1)
+                if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                 {
                     Array.Copy(_dbbuffer, record_pointer, buf, 0,
                                Math.Min(_dbbuffer.Length - record_pointer, MAX_ORG_RECORD_LENGTH));
@@ -962,7 +967,7 @@ namespace GeoIP
             {
                 try
                 {
-                    if ((dboptions & GEOIP_MEMORY_CACHE) == 1)
+                    if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                     {
                         for (int i = 0; i < (2*MAX_RECORD_LENGTH); i++)
                         {
@@ -1034,7 +1039,7 @@ namespace GeoIP
             {
                 try
                 {
-                    if ((dboptions & GEOIP_MEMORY_CACHE) == 1)
+                    if ((dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
                     {
                         for (int i = 0; i < (2*MAX_RECORD_LENGTH); i++)
                         {
