@@ -17,19 +17,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-
 using System;
-using System.IO;
 
 namespace GeoIP
 {
-
     public class Country
     {
-
-        private String code;
-        private String name;
+        public String Code { get; private set; }
+        public String Name { get; private set; }
 
         /**
          * Creates a new Country.
@@ -37,33 +32,10 @@ namespace GeoIP
          * @param code the country code.
          * @param name the country name.
          */
-
         public Country(String code, String name)
         {
-            this.code = code;
-            this.name = name;
-        }
-
-        /**
-          * Returns the ISO two-letter country code of this country.
-          *
-          * @return the country code.
-          */
-
-        public String getCode()
-        {
-            return code;
-        }
-
-        /**
-         * Returns the name of this country.
-         *
-         * @return the country name.
-         */
-
-        public String getName()
-        {
-            return name;
+            Code = code;
+            Name = name;
         }
     }
 }

@@ -17,54 +17,47 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-
 using System;
-using System.IO;
 
 namespace GeoIP
 {
     public class DatabaseInfo
     {
+        public const int COUNTRY_EDITION = 1;
+        public const int REGION_EDITION_REV0 = 7;
+        public const int REGION_EDITION_REV1 = 3;
+        public const int CITY_EDITION_REV0 = 6;
+        public const int CITY_EDITION_REV1 = 2;
+        public const int ORG_EDITION = 5;
+        public const int ISP_EDITION = 4;
+        public const int PROXY_EDITION = 8;
+        public const int ASNUM_EDITION = 9;
+        public const int NETSPEED_EDITION = 10;
+        public const int DOMAIN_EDITION = 11;
+        public const int COUNTRY_EDITION_V6 = 12;
+        public const int ASNUM_EDITION_V6 = 21;
+        public const int ISP_EDITION_V6 = 22;
+        public const int ORG_EDITION_V6 = 23;
+        public const int DOMAIN_EDITION_V6 = 24;
+        public const int CITY_EDITION_REV1_V6 = 30;
+        public const int CITY_EDITION_REV0_V6 = 31;
+        public const int NETSPEED_EDITION_REV1 = 32;
+        public const int NETSPEED_EDITION_REV1_V6 = 33;
 
-        public static int COUNTRY_EDITION = 1;
-        public static int REGION_EDITION_REV0 = 7;
-        public static int REGION_EDITION_REV1 = 3;
-        public static int CITY_EDITION_REV0 = 6;
-        public static int CITY_EDITION_REV1 = 2;
-        public static int ORG_EDITION = 5;
-        public static int ISP_EDITION = 4;
-        public static int PROXY_EDITION = 8;
-        public static int ASNUM_EDITION = 9;
-        public static int NETSPEED_EDITION = 10;
-        public static int DOMAIN_EDITION = 11;
-        public static int COUNTRY_EDITION_V6 = 12;
-        public static int ASNUM_EDITION_V6 = 21;
-        public static int ISP_EDITION_V6 = 22;
-        public static int ORG_EDITION_V6 = 23;
-        public static int DOMAIN_EDITION_V6 = 24;
-        public static int CITY_EDITION_REV1_V6 = 30;
-        public static int CITY_EDITION_REV0_V6 = 31;
-        public static int NETSPEED_EDITION_REV1 = 32;
-        public static int NETSPEED_EDITION_REV1_V6 = 33;
+        private readonly String _info;
 
-
-        //private static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-
-        private String info;
         /**
           * Creates a new DatabaseInfo object given the database info String.
           * @param info
           */
-
         public DatabaseInfo(String info)
         {
-            this.info = info;
+            this._info = info;
         }
 
-        public int getType()
+        public int GetTypeCode()
         {
-            if ((info == null) | (info == ""))
+            if ((_info == null) | (_info == ""))
             {
                 return COUNTRY_EDITION;
             }
@@ -73,7 +66,7 @@ namespace GeoIP
                 // Get the type code from the database info string and then
                 // subtract 105 from the value to preserve compatability with
                 // databases from April 2003 and earlier.
-                return Convert.ToInt32(info.Substring(4, 3)) - 105;
+                return Convert.ToInt32(_info.Substring(4, 3)) - 105;
             }
         }
 
@@ -82,10 +75,9 @@ namespace GeoIP
          *
          * @return true if the premium version of the database.
          */
-
-        public bool isPremium()
+        public bool IsPremium()
         {
-            return info.IndexOf("FREE") < 0;
+            return _info.IndexOf("FREE") < 0;
         }
 
         /**
@@ -93,19 +85,16 @@ namespace GeoIP
          *
          * @return the date of the database.
          */
-
-        public DateTime getDate()
+        public DateTime GetDate()
         {
-            for (int i = 0; i < info.Length - 9; i++)
+            for (int i = 0; i < _info.Length - 9; i++)
             {
-                if (Char.IsWhiteSpace(info[i]) == true)
+                if (Char.IsWhiteSpace(_info[i]) == true)
                 {
-                    String dateString = info.Substring(i + 1, 8);
+                    String dateString = _info.Substring(i + 1, 8);
                     try
                     {
-                        //synchronized (formatter) {
                         return DateTime.ParseExact(dateString, "yyyyMMdd", null);
-                        //}
                     }
                     catch (Exception e)
                     {
@@ -117,9 +106,9 @@ namespace GeoIP
             return DateTime.Now;
         }
 
-        public String toString()
+        public override string ToString()
         {
-            return info;
+            return _info;
         }
     }
 }

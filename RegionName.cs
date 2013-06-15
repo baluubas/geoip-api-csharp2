@@ -7,14 +7,13 @@ namespace GeoIP
 {
     public static class RegionName
     {
+        private static Hashtable _geoipRegionName;
 
-        private static Hashtable GEOIP_REGION_NAME;
-
-        public static String getRegionName(String ccode, String region)
+        public static String GetRegionName(String ccode, String region)
         {
-            if (GEOIP_REGION_NAME == null)
+            if (_geoipRegionName == null)
             {
-                init_region_names();
+                InitRegionNames();
             }
 
             if (region == null || region == "00")
@@ -22,18 +21,17 @@ namespace GeoIP
                 return null;
             }
 
-            if (!GEOIP_REGION_NAME.ContainsKey(ccode))
+            if (!_geoipRegionName.ContainsKey(ccode))
             {
                 return null;
             }
 
-            return (String) ((Hashtable) GEOIP_REGION_NAME[ccode])[region];
+            return (String) ((Hashtable) _geoipRegionName[ccode])[region];
         }
 
-        private static void init_region_names()
+        private static void InitRegionNames()
         {
-
-            GEOIP_REGION_NAME = new Hashtable();
+            _geoipRegionName = new Hashtable();
             Hashtable cc_reg_AD = new Hashtable();
             cc_reg_AD.Add("02", "Canillo");
             cc_reg_AD.Add("03", "Encamp");
@@ -42,7 +40,7 @@ namespace GeoIP
             cc_reg_AD.Add("06", "Sant Julia de Loria");
             cc_reg_AD.Add("07", "Andorra la Vella");
             cc_reg_AD.Add("08", "Escaldes-Engordany");
-            GEOIP_REGION_NAME.Add("AD", cc_reg_AD);
+            _geoipRegionName.Add("AD", cc_reg_AD);
             Hashtable cc_reg_AE = new Hashtable();
             cc_reg_AE.Add("01", "Abu Dhabi");
             cc_reg_AE.Add("02", "Ajman");
@@ -51,7 +49,7 @@ namespace GeoIP
             cc_reg_AE.Add("05", "Ras Al Khaimah");
             cc_reg_AE.Add("06", "Sharjah");
             cc_reg_AE.Add("07", "Umm Al Quwain");
-            GEOIP_REGION_NAME.Add("AE", cc_reg_AE);
+            _geoipRegionName.Add("AE", cc_reg_AE);
             Hashtable cc_reg_AF = new Hashtable();
             cc_reg_AF.Add("01", "Badakhshan");
             cc_reg_AF.Add("02", "Badghis");
@@ -87,7 +85,7 @@ namespace GeoIP
             cc_reg_AF.Add("40", "Parvan");
             cc_reg_AF.Add("41", "Daykondi");
             cc_reg_AF.Add("42", "Panjshir");
-            GEOIP_REGION_NAME.Add("AF", cc_reg_AF);
+            _geoipRegionName.Add("AF", cc_reg_AF);
             Hashtable cc_reg_AG = new Hashtable();
             cc_reg_AG.Add("01", "Barbuda");
             cc_reg_AG.Add("03", "Saint George");
@@ -97,7 +95,7 @@ namespace GeoIP
             cc_reg_AG.Add("07", "Saint Peter");
             cc_reg_AG.Add("08", "Saint Philip");
             cc_reg_AG.Add("09", "Redonda");
-            GEOIP_REGION_NAME.Add("AG", cc_reg_AG);
+            _geoipRegionName.Add("AG", cc_reg_AG);
             Hashtable cc_reg_AL = new Hashtable();
             cc_reg_AL.Add("40", "Berat");
             cc_reg_AL.Add("41", "Diber");
@@ -111,7 +109,7 @@ namespace GeoIP
             cc_reg_AL.Add("49", "Shkoder");
             cc_reg_AL.Add("50", "Tirane");
             cc_reg_AL.Add("51", "Vlore");
-            GEOIP_REGION_NAME.Add("AL", cc_reg_AL);
+            _geoipRegionName.Add("AL", cc_reg_AL);
             Hashtable cc_reg_AM = new Hashtable();
             cc_reg_AM.Add("01", "Aragatsotn");
             cc_reg_AM.Add("02", "Ararat");
@@ -124,7 +122,7 @@ namespace GeoIP
             cc_reg_AM.Add("09", "Tavush");
             cc_reg_AM.Add("10", "Vayots' Dzor");
             cc_reg_AM.Add("11", "Yerevan");
-            GEOIP_REGION_NAME.Add("AM", cc_reg_AM);
+            _geoipRegionName.Add("AM", cc_reg_AM);
             Hashtable cc_reg_AO = new Hashtable();
             cc_reg_AO.Add("01", "Benguela");
             cc_reg_AO.Add("02", "Bie");
@@ -144,7 +142,7 @@ namespace GeoIP
             cc_reg_AO.Add("18", "Lunda Sul");
             cc_reg_AO.Add("19", "Bengo");
             cc_reg_AO.Add("20", "Luanda");
-            GEOIP_REGION_NAME.Add("AO", cc_reg_AO);
+            _geoipRegionName.Add("AO", cc_reg_AO);
             Hashtable cc_reg_AR = new Hashtable();
             cc_reg_AR.Add("01", "Buenos Aires");
             cc_reg_AR.Add("02", "Catamarca");
@@ -170,7 +168,7 @@ namespace GeoIP
             cc_reg_AR.Add("22", "Santiago del Estero");
             cc_reg_AR.Add("23", "Tierra del Fuego");
             cc_reg_AR.Add("24", "Tucuman");
-            GEOIP_REGION_NAME.Add("AR", cc_reg_AR);
+            _geoipRegionName.Add("AR", cc_reg_AR);
             Hashtable cc_reg_AT = new Hashtable();
             cc_reg_AT.Add("01", "Burgenland");
             cc_reg_AT.Add("02", "Karnten");
@@ -181,7 +179,7 @@ namespace GeoIP
             cc_reg_AT.Add("07", "Tirol");
             cc_reg_AT.Add("08", "Vorarlberg");
             cc_reg_AT.Add("09", "Wien");
-            GEOIP_REGION_NAME.Add("AT", cc_reg_AT);
+            _geoipRegionName.Add("AT", cc_reg_AT);
             Hashtable cc_reg_AU = new Hashtable();
             cc_reg_AU.Add("01", "Australian Capital Territory");
             cc_reg_AU.Add("02", "New South Wales");
@@ -191,7 +189,7 @@ namespace GeoIP
             cc_reg_AU.Add("06", "Tasmania");
             cc_reg_AU.Add("07", "Victoria");
             cc_reg_AU.Add("08", "Western Australia");
-            GEOIP_REGION_NAME.Add("AU", cc_reg_AU);
+            _geoipRegionName.Add("AU", cc_reg_AU);
             Hashtable cc_reg_AZ = new Hashtable();
             cc_reg_AZ.Add("01", "Abseron");
             cc_reg_AZ.Add("02", "Agcabadi");
@@ -264,11 +262,11 @@ namespace GeoIP
             cc_reg_AZ.Add("69", "Zangilan");
             cc_reg_AZ.Add("70", "Zaqatala");
             cc_reg_AZ.Add("71", "Zardab");
-            GEOIP_REGION_NAME.Add("AZ", cc_reg_AZ);
+            _geoipRegionName.Add("AZ", cc_reg_AZ);
             Hashtable cc_reg_BA = new Hashtable();
             cc_reg_BA.Add("01", "Federation of Bosnia and Herzegovina");
             cc_reg_BA.Add("02", "Republika Srpska");
-            GEOIP_REGION_NAME.Add("BA", cc_reg_BA);
+            _geoipRegionName.Add("BA", cc_reg_BA);
             Hashtable cc_reg_BB = new Hashtable();
             cc_reg_BB.Add("01", "Christ Church");
             cc_reg_BB.Add("02", "Saint Andrew");
@@ -281,7 +279,7 @@ namespace GeoIP
             cc_reg_BB.Add("09", "Saint Peter");
             cc_reg_BB.Add("10", "Saint Philip");
             cc_reg_BB.Add("11", "Saint Thomas");
-            GEOIP_REGION_NAME.Add("BB", cc_reg_BB);
+            _geoipRegionName.Add("BB", cc_reg_BB);
             Hashtable cc_reg_BD = new Hashtable();
             cc_reg_BD.Add("81", "Dhaka");
             cc_reg_BD.Add("82", "Khulna");
@@ -289,7 +287,7 @@ namespace GeoIP
             cc_reg_BD.Add("84", "Chittagong");
             cc_reg_BD.Add("85", "Barisal");
             cc_reg_BD.Add("86", "Sylhet");
-            GEOIP_REGION_NAME.Add("BD", cc_reg_BD);
+            _geoipRegionName.Add("BD", cc_reg_BD);
             Hashtable cc_reg_BE = new Hashtable();
             cc_reg_BE.Add("01", "Antwerpen");
             cc_reg_BE.Add("03", "Hainaut");
@@ -304,7 +302,7 @@ namespace GeoIP
             cc_reg_BE.Add("12", "Vlaams-Brabant");
             cc_reg_BE.Add("13", "Flanders");
             cc_reg_BE.Add("14", "Wallonia");
-            GEOIP_REGION_NAME.Add("BE", cc_reg_BE);
+            _geoipRegionName.Add("BE", cc_reg_BE);
             Hashtable cc_reg_BF = new Hashtable();
             cc_reg_BF.Add("15", "Bam");
             cc_reg_BF.Add("19", "Boulkiemde");
@@ -351,7 +349,7 @@ namespace GeoIP
             cc_reg_BF.Add("76", "Yatenga");
             cc_reg_BF.Add("77", "Ziro");
             cc_reg_BF.Add("78", "Zondoma");
-            GEOIP_REGION_NAME.Add("BF", cc_reg_BF);
+            _geoipRegionName.Add("BF", cc_reg_BF);
             Hashtable cc_reg_BG = new Hashtable();
             cc_reg_BG.Add("33", "Mikhaylovgrad");
             cc_reg_BG.Add("38", "Blagoevgrad");
@@ -382,7 +380,7 @@ namespace GeoIP
             cc_reg_BG.Add("63", "Vidin");
             cc_reg_BG.Add("64", "Vratsa");
             cc_reg_BG.Add("65", "Yambol");
-            GEOIP_REGION_NAME.Add("BG", cc_reg_BG);
+            _geoipRegionName.Add("BG", cc_reg_BG);
             Hashtable cc_reg_BH = new Hashtable();
             cc_reg_BH.Add("01", "Al Hadd");
             cc_reg_BH.Add("02", "Al Manamah");
@@ -400,7 +398,7 @@ namespace GeoIP
             cc_reg_BH.Add("17", "Al Janubiyah");
             cc_reg_BH.Add("18", "Ash Shamaliyah");
             cc_reg_BH.Add("19", "Al Wusta");
-            GEOIP_REGION_NAME.Add("BH", cc_reg_BH);
+            _geoipRegionName.Add("BH", cc_reg_BH);
             Hashtable cc_reg_BI = new Hashtable();
             cc_reg_BI.Add("02", "Bujumbura");
             cc_reg_BI.Add("09", "Bubanza");
@@ -418,7 +416,7 @@ namespace GeoIP
             cc_reg_BI.Add("21", "Ruyigi");
             cc_reg_BI.Add("22", "Muramvya");
             cc_reg_BI.Add("23", "Mwaro");
-            GEOIP_REGION_NAME.Add("BI", cc_reg_BI);
+            _geoipRegionName.Add("BI", cc_reg_BI);
             Hashtable cc_reg_BJ = new Hashtable();
             cc_reg_BJ.Add("07", "Alibori");
             cc_reg_BJ.Add("08", "Atakora");
@@ -432,7 +430,7 @@ namespace GeoIP
             cc_reg_BJ.Add("16", "Oueme");
             cc_reg_BJ.Add("17", "Plateau");
             cc_reg_BJ.Add("18", "Zou");
-            GEOIP_REGION_NAME.Add("BJ", cc_reg_BJ);
+            _geoipRegionName.Add("BJ", cc_reg_BJ);
             Hashtable cc_reg_BM = new Hashtable();
             cc_reg_BM.Add("01", "Devonshire");
             cc_reg_BM.Add("02", "Hamilton");
@@ -445,7 +443,7 @@ namespace GeoIP
             cc_reg_BM.Add("09", "Smiths");
             cc_reg_BM.Add("10", "Southampton");
             cc_reg_BM.Add("11", "Warwick");
-            GEOIP_REGION_NAME.Add("BM", cc_reg_BM);
+            _geoipRegionName.Add("BM", cc_reg_BM);
             Hashtable cc_reg_BN = new Hashtable();
             cc_reg_BN.Add("07", "Alibori");
             cc_reg_BN.Add("08", "Belait");
@@ -459,7 +457,7 @@ namespace GeoIP
             cc_reg_BN.Add("16", "Oueme");
             cc_reg_BN.Add("17", "Plateau");
             cc_reg_BN.Add("18", "Zou");
-            GEOIP_REGION_NAME.Add("BN", cc_reg_BN);
+            _geoipRegionName.Add("BN", cc_reg_BN);
             Hashtable cc_reg_BO = new Hashtable();
             cc_reg_BO.Add("01", "Chuquisaca");
             cc_reg_BO.Add("02", "Cochabamba");
@@ -470,7 +468,7 @@ namespace GeoIP
             cc_reg_BO.Add("07", "Potosi");
             cc_reg_BO.Add("08", "Santa Cruz");
             cc_reg_BO.Add("09", "Tarija");
-            GEOIP_REGION_NAME.Add("BO", cc_reg_BO);
+            _geoipRegionName.Add("BO", cc_reg_BO);
             Hashtable cc_reg_BR = new Hashtable();
             cc_reg_BR.Add("01", "Acre");
             cc_reg_BR.Add("02", "Alagoas");
@@ -499,7 +497,7 @@ namespace GeoIP
             cc_reg_BR.Add("29", "Goias");
             cc_reg_BR.Add("30", "Pernambuco");
             cc_reg_BR.Add("31", "Tocantins");
-            GEOIP_REGION_NAME.Add("BR", cc_reg_BR);
+            _geoipRegionName.Add("BR", cc_reg_BR);
             Hashtable cc_reg_BS = new Hashtable();
             cc_reg_BS.Add("05", "Bimini");
             cc_reg_BS.Add("06", "Cat Island");
@@ -522,7 +520,7 @@ namespace GeoIP
             cc_reg_BS.Add("33", "Rock Sound");
             cc_reg_BS.Add("34", "Sandy Point");
             cc_reg_BS.Add("35", "San Salvador and Rum Cay");
-            GEOIP_REGION_NAME.Add("BS", cc_reg_BS);
+            _geoipRegionName.Add("BS", cc_reg_BS);
             Hashtable cc_reg_BT = new Hashtable();
             cc_reg_BT.Add("05", "Bumthang");
             cc_reg_BT.Add("06", "Chhukha");
@@ -542,7 +540,7 @@ namespace GeoIP
             cc_reg_BT.Add("20", "Thimphu");
             cc_reg_BT.Add("21", "Tongsa");
             cc_reg_BT.Add("22", "Wangdi Phodrang");
-            GEOIP_REGION_NAME.Add("BT", cc_reg_BT);
+            _geoipRegionName.Add("BT", cc_reg_BT);
             Hashtable cc_reg_BW = new Hashtable();
             cc_reg_BW.Add("01", "Central");
             cc_reg_BW.Add("03", "Ghanzi");
@@ -553,7 +551,7 @@ namespace GeoIP
             cc_reg_BW.Add("09", "South-East");
             cc_reg_BW.Add("10", "Southern");
             cc_reg_BW.Add("11", "North-West");
-            GEOIP_REGION_NAME.Add("BW", cc_reg_BW);
+            _geoipRegionName.Add("BW", cc_reg_BW);
             Hashtable cc_reg_BY = new Hashtable();
             cc_reg_BY.Add("01", "Brestskaya Voblasts'");
             cc_reg_BY.Add("02", "Homyel'skaya Voblasts'");
@@ -562,7 +560,7 @@ namespace GeoIP
             cc_reg_BY.Add("05", "Minskaya Voblasts'");
             cc_reg_BY.Add("06", "Mahilyowskaya Voblasts'");
             cc_reg_BY.Add("07", "Vitsyebskaya Voblasts'");
-            GEOIP_REGION_NAME.Add("BY", cc_reg_BY);
+            _geoipRegionName.Add("BY", cc_reg_BY);
             Hashtable cc_reg_BZ = new Hashtable();
             cc_reg_BZ.Add("01", "Belize");
             cc_reg_BZ.Add("02", "Cayo");
@@ -570,7 +568,7 @@ namespace GeoIP
             cc_reg_BZ.Add("04", "Orange Walk");
             cc_reg_BZ.Add("05", "Stann Creek");
             cc_reg_BZ.Add("06", "Toledo");
-            GEOIP_REGION_NAME.Add("BZ", cc_reg_BZ);
+            _geoipRegionName.Add("BZ", cc_reg_BZ);
             Hashtable cc_reg_CA = new Hashtable();
             cc_reg_CA.Add("AB", "Alberta");
             cc_reg_CA.Add("BC", "British Columbia");
@@ -585,7 +583,7 @@ namespace GeoIP
             cc_reg_CA.Add("QC", "Quebec");
             cc_reg_CA.Add("SK", "Saskatchewan");
             cc_reg_CA.Add("YT", "Yukon Territory");
-            GEOIP_REGION_NAME.Add("CA", cc_reg_CA);
+            _geoipRegionName.Add("CA", cc_reg_CA);
             Hashtable cc_reg_CD = new Hashtable();
             cc_reg_CD.Add("01", "Bandundu");
             cc_reg_CD.Add("02", "Equateur");
@@ -597,7 +595,7 @@ namespace GeoIP
             cc_reg_CD.Add("10", "Maniema");
             cc_reg_CD.Add("11", "Nord-Kivu");
             cc_reg_CD.Add("12", "Sud-Kivu");
-            GEOIP_REGION_NAME.Add("CD", cc_reg_CD);
+            _geoipRegionName.Add("CD", cc_reg_CD);
             Hashtable cc_reg_CF = new Hashtable();
             cc_reg_CF.Add("01", "Bamingui-Bangoran");
             cc_reg_CF.Add("02", "Basse-Kotto");
@@ -616,7 +614,7 @@ namespace GeoIP
             cc_reg_CF.Add("16", "Sangha-Mbaere");
             cc_reg_CF.Add("17", "Ombella-Mpoko");
             cc_reg_CF.Add("18", "Bangui");
-            GEOIP_REGION_NAME.Add("CF", cc_reg_CF);
+            _geoipRegionName.Add("CF", cc_reg_CF);
             Hashtable cc_reg_CG = new Hashtable();
             cc_reg_CG.Add("01", "Bouenza");
             cc_reg_CG.Add("04", "Kouilou");
@@ -629,7 +627,7 @@ namespace GeoIP
             cc_reg_CG.Add("12", "Brazzaville");
             cc_reg_CG.Add("13", "Cuvette");
             cc_reg_CG.Add("14", "Cuvette-Ouest");
-            GEOIP_REGION_NAME.Add("CG", cc_reg_CG);
+            _geoipRegionName.Add("CG", cc_reg_CG);
             Hashtable cc_reg_CH = new Hashtable();
             cc_reg_CH.Add("01", "Aargau");
             cc_reg_CH.Add("02", "Ausser-Rhoden");
@@ -657,7 +655,7 @@ namespace GeoIP
             cc_reg_CH.Add("24", "Zug");
             cc_reg_CH.Add("25", "Zurich");
             cc_reg_CH.Add("26", "Jura");
-            GEOIP_REGION_NAME.Add("CH", cc_reg_CH);
+            _geoipRegionName.Add("CH", cc_reg_CH);
             Hashtable cc_reg_CI = new Hashtable();
             cc_reg_CI.Add("74", "Agneby");
             cc_reg_CI.Add("75", "Bafing");
@@ -678,7 +676,7 @@ namespace GeoIP
             cc_reg_CI.Add("90", "Vallee du Bandama");
             cc_reg_CI.Add("91", "Worodougou");
             cc_reg_CI.Add("92", "Zanzan");
-            GEOIP_REGION_NAME.Add("CI", cc_reg_CI);
+            _geoipRegionName.Add("CI", cc_reg_CI);
             Hashtable cc_reg_CL = new Hashtable();
             cc_reg_CL.Add("01", "Valparaiso");
             cc_reg_CL.Add("02", "Aisen del General Carlos Ibanez del Campo");
@@ -697,7 +695,7 @@ namespace GeoIP
             cc_reg_CL.Add("15", "Tarapaca");
             cc_reg_CL.Add("16", "Arica y Parinacota");
             cc_reg_CL.Add("17", "Los Rios");
-            GEOIP_REGION_NAME.Add("CL", cc_reg_CL);
+            _geoipRegionName.Add("CL", cc_reg_CL);
             Hashtable cc_reg_CM = new Hashtable();
             cc_reg_CM.Add("04", "Est");
             cc_reg_CM.Add("05", "Littoral");
@@ -709,7 +707,7 @@ namespace GeoIP
             cc_reg_CM.Add("12", "Extreme-Nord");
             cc_reg_CM.Add("13", "Nord");
             cc_reg_CM.Add("14", "Sud");
-            GEOIP_REGION_NAME.Add("CM", cc_reg_CM);
+            _geoipRegionName.Add("CM", cc_reg_CM);
             Hashtable cc_reg_CN = new Hashtable();
             cc_reg_CN.Add("01", "Anhui");
             cc_reg_CN.Add("02", "Zhejiang");
@@ -742,7 +740,7 @@ namespace GeoIP
             cc_reg_CN.Add("31", "Hainan");
             cc_reg_CN.Add("32", "Sichuan");
             cc_reg_CN.Add("33", "Chongqing");
-            GEOIP_REGION_NAME.Add("CN", cc_reg_CN);
+            _geoipRegionName.Add("CN", cc_reg_CN);
             Hashtable cc_reg_CO = new Hashtable();
             cc_reg_CO.Add("01", "Amazonas");
             cc_reg_CO.Add("02", "Antioquia");
@@ -777,7 +775,7 @@ namespace GeoIP
             cc_reg_CO.Add("36", "Boyaca");
             cc_reg_CO.Add("37", "Caldas");
             cc_reg_CO.Add("38", "Magdalena");
-            GEOIP_REGION_NAME.Add("CO", cc_reg_CO);
+            _geoipRegionName.Add("CO", cc_reg_CO);
             Hashtable cc_reg_CR = new Hashtable();
             cc_reg_CR.Add("01", "Alajuela");
             cc_reg_CR.Add("02", "Cartago");
@@ -786,7 +784,7 @@ namespace GeoIP
             cc_reg_CR.Add("06", "Limon");
             cc_reg_CR.Add("07", "Puntarenas");
             cc_reg_CR.Add("08", "San Jose");
-            GEOIP_REGION_NAME.Add("CR", cc_reg_CR);
+            _geoipRegionName.Add("CR", cc_reg_CR);
             Hashtable cc_reg_CU = new Hashtable();
             cc_reg_CU.Add("01", "Pinar del Rio");
             cc_reg_CU.Add("02", "Ciudad de la Habana");
@@ -803,7 +801,7 @@ namespace GeoIP
             cc_reg_CU.Add("14", "Sancti Spiritus");
             cc_reg_CU.Add("15", "Santiago de Cuba");
             cc_reg_CU.Add("16", "Villa Clara");
-            GEOIP_REGION_NAME.Add("CU", cc_reg_CU);
+            _geoipRegionName.Add("CU", cc_reg_CU);
             Hashtable cc_reg_CV = new Hashtable();
             cc_reg_CV.Add("01", "Boa Vista");
             cc_reg_CV.Add("02", "Brava");
@@ -821,7 +819,7 @@ namespace GeoIP
             cc_reg_CV.Add("18", "Sao Filipe");
             cc_reg_CV.Add("19", "Sao Miguel");
             cc_reg_CV.Add("20", "Tarrafal");
-            GEOIP_REGION_NAME.Add("CV", cc_reg_CV);
+            _geoipRegionName.Add("CV", cc_reg_CV);
             Hashtable cc_reg_CY = new Hashtable();
             cc_reg_CY.Add("01", "Famagusta");
             cc_reg_CY.Add("02", "Kyrenia");
@@ -829,7 +827,7 @@ namespace GeoIP
             cc_reg_CY.Add("04", "Nicosia");
             cc_reg_CY.Add("05", "Limassol");
             cc_reg_CY.Add("06", "Paphos");
-            GEOIP_REGION_NAME.Add("CY", cc_reg_CY);
+            _geoipRegionName.Add("CY", cc_reg_CY);
             Hashtable cc_reg_CZ = new Hashtable();
             cc_reg_CZ.Add("52", "Hlavni mesto Praha");
             cc_reg_CZ.Add("78", "Jihomoravsky kraj");
@@ -845,7 +843,7 @@ namespace GeoIP
             cc_reg_CZ.Add("88", "Stredocesky kraj");
             cc_reg_CZ.Add("89", "Ustecky kraj");
             cc_reg_CZ.Add("90", "Zlinsky kraj");
-            GEOIP_REGION_NAME.Add("CZ", cc_reg_CZ);
+            _geoipRegionName.Add("CZ", cc_reg_CZ);
             Hashtable cc_reg_DE = new Hashtable();
             cc_reg_DE.Add("01", "Baden-Wurttemberg");
             cc_reg_DE.Add("02", "Bayern");
@@ -863,7 +861,7 @@ namespace GeoIP
             cc_reg_DE.Add("14", "Sachsen-Anhalt");
             cc_reg_DE.Add("15", "Thuringen");
             cc_reg_DE.Add("16", "Berlin");
-            GEOIP_REGION_NAME.Add("DE", cc_reg_DE);
+            _geoipRegionName.Add("DE", cc_reg_DE);
             Hashtable cc_reg_DJ = new Hashtable();
             cc_reg_DJ.Add("01", "Ali Sabieh");
             cc_reg_DJ.Add("04", "Obock");
@@ -871,14 +869,14 @@ namespace GeoIP
             cc_reg_DJ.Add("06", "Dikhil");
             cc_reg_DJ.Add("07", "Djibouti");
             cc_reg_DJ.Add("08", "Arta");
-            GEOIP_REGION_NAME.Add("DJ", cc_reg_DJ);
+            _geoipRegionName.Add("DJ", cc_reg_DJ);
             Hashtable cc_reg_DK = new Hashtable();
             cc_reg_DK.Add("17", "Hovedstaden");
             cc_reg_DK.Add("18", "Midtjylland");
             cc_reg_DK.Add("19", "Nordjylland");
             cc_reg_DK.Add("20", "Sjelland");
             cc_reg_DK.Add("21", "Syddanmark");
-            GEOIP_REGION_NAME.Add("DK", cc_reg_DK);
+            _geoipRegionName.Add("DK", cc_reg_DK);
             Hashtable cc_reg_DM = new Hashtable();
             cc_reg_DM.Add("02", "Saint Andrew");
             cc_reg_DM.Add("03", "Saint David");
@@ -890,7 +888,7 @@ namespace GeoIP
             cc_reg_DM.Add("09", "Saint Patrick");
             cc_reg_DM.Add("10", "Saint Paul");
             cc_reg_DM.Add("11", "Saint Peter");
-            GEOIP_REGION_NAME.Add("DM", cc_reg_DM);
+            _geoipRegionName.Add("DM", cc_reg_DM);
             Hashtable cc_reg_DO = new Hashtable();
             cc_reg_DO.Add("01", "Azua");
             cc_reg_DO.Add("02", "Baoruco");
@@ -926,7 +924,7 @@ namespace GeoIP
             cc_reg_DO.Add("35", "Peravia");
             cc_reg_DO.Add("36", "San Jose de Ocoa");
             cc_reg_DO.Add("37", "Santo Domingo");
-            GEOIP_REGION_NAME.Add("DO", cc_reg_DO);
+            _geoipRegionName.Add("DO", cc_reg_DO);
             Hashtable cc_reg_DZ = new Hashtable();
             cc_reg_DZ.Add("01", "Alger");
             cc_reg_DZ.Add("03", "Batna");
@@ -976,7 +974,7 @@ namespace GeoIP
             cc_reg_DZ.Add("54", "Tindouf");
             cc_reg_DZ.Add("55", "Tipaza");
             cc_reg_DZ.Add("56", "Tissemsilt");
-            GEOIP_REGION_NAME.Add("DZ", cc_reg_DZ);
+            _geoipRegionName.Add("DZ", cc_reg_DZ);
             Hashtable cc_reg_EC = new Hashtable();
             cc_reg_EC.Add("01", "Galapagos");
             cc_reg_EC.Add("02", "Azuay");
@@ -1000,7 +998,7 @@ namespace GeoIP
             cc_reg_EC.Add("22", "Sucumbios");
             cc_reg_EC.Add("23", "Napo");
             cc_reg_EC.Add("24", "Orellana");
-            GEOIP_REGION_NAME.Add("EC", cc_reg_EC);
+            _geoipRegionName.Add("EC", cc_reg_EC);
             Hashtable cc_reg_EE = new Hashtable();
             cc_reg_EE.Add("01", "Harjumaa");
             cc_reg_EE.Add("02", "Hiiumaa");
@@ -1023,7 +1021,7 @@ namespace GeoIP
             cc_reg_EE.Add("19", "Valgamaa");
             cc_reg_EE.Add("20", "Viljandimaa");
             cc_reg_EE.Add("21", "Vorumaa");
-            GEOIP_REGION_NAME.Add("EE", cc_reg_EE);
+            _geoipRegionName.Add("EE", cc_reg_EE);
             Hashtable cc_reg_EG = new Hashtable();
             cc_reg_EG.Add("01", "Ad Daqahliyah");
             cc_reg_EG.Add("02", "Al Bahr al Ahmar");
@@ -1051,7 +1049,7 @@ namespace GeoIP
             cc_reg_EG.Add("24", "Suhaj");
             cc_reg_EG.Add("26", "Janub Sina'");
             cc_reg_EG.Add("27", "Shamal Sina'");
-            GEOIP_REGION_NAME.Add("EG", cc_reg_EG);
+            _geoipRegionName.Add("EG", cc_reg_EG);
             Hashtable cc_reg_ER = new Hashtable();
             cc_reg_ER.Add("01", "Anseba");
             cc_reg_ER.Add("02", "Debub");
@@ -1059,7 +1057,7 @@ namespace GeoIP
             cc_reg_ER.Add("04", "Gash Barka");
             cc_reg_ER.Add("05", "Ma'akel");
             cc_reg_ER.Add("06", "Semenawi K'eyih Bahri");
-            GEOIP_REGION_NAME.Add("ER", cc_reg_ER);
+            _geoipRegionName.Add("ER", cc_reg_ER);
             Hashtable cc_reg_ES = new Hashtable();
             cc_reg_ES.Add("07", "Islas Baleares");
             cc_reg_ES.Add("27", "La Rioja");
@@ -1078,7 +1076,7 @@ namespace GeoIP
             cc_reg_ES.Add("58", "Galicia");
             cc_reg_ES.Add("59", "Pais Vasco");
             cc_reg_ES.Add("60", "Comunidad Valenciana");
-            GEOIP_REGION_NAME.Add("ES", cc_reg_ES);
+            _geoipRegionName.Add("ES", cc_reg_ES);
             Hashtable cc_reg_ET = new Hashtable();
             cc_reg_ET.Add("44", "Adis Abeba");
             cc_reg_ET.Add("45", "Afar");
@@ -1091,7 +1089,7 @@ namespace GeoIP
             cc_reg_ET.Add("52", "Sumale");
             cc_reg_ET.Add("53", "Tigray");
             cc_reg_ET.Add("54", "YeDebub Biheroch Bihereseboch na Hizboch");
-            GEOIP_REGION_NAME.Add("ET", cc_reg_ET);
+            _geoipRegionName.Add("ET", cc_reg_ET);
             Hashtable cc_reg_FI = new Hashtable();
             cc_reg_FI.Add("01", "Aland");
             cc_reg_FI.Add("06", "Lapland");
@@ -1099,20 +1097,20 @@ namespace GeoIP
             cc_reg_FI.Add("13", "Southern Finland");
             cc_reg_FI.Add("14", "Eastern Finland");
             cc_reg_FI.Add("15", "Western Finland");
-            GEOIP_REGION_NAME.Add("FI", cc_reg_FI);
+            _geoipRegionName.Add("FI", cc_reg_FI);
             Hashtable cc_reg_FJ = new Hashtable();
             cc_reg_FJ.Add("01", "Central");
             cc_reg_FJ.Add("02", "Eastern");
             cc_reg_FJ.Add("03", "Northern");
             cc_reg_FJ.Add("04", "Rotuma");
             cc_reg_FJ.Add("05", "Western");
-            GEOIP_REGION_NAME.Add("FJ", cc_reg_FJ);
+            _geoipRegionName.Add("FJ", cc_reg_FJ);
             Hashtable cc_reg_FM = new Hashtable();
             cc_reg_FM.Add("01", "Kosrae");
             cc_reg_FM.Add("02", "Pohnpei");
             cc_reg_FM.Add("03", "Chuuk");
             cc_reg_FM.Add("04", "Yap");
-            GEOIP_REGION_NAME.Add("FM", cc_reg_FM);
+            _geoipRegionName.Add("FM", cc_reg_FM);
             Hashtable cc_reg_FR = new Hashtable();
             cc_reg_FR.Add("97", "Aquitaine");
             cc_reg_FR.Add("98", "Auvergne");
@@ -1136,7 +1134,7 @@ namespace GeoIP
             cc_reg_FR.Add("B8", "Provence-Alpes-Cote d'Azur");
             cc_reg_FR.Add("B9", "Rhone-Alpes");
             cc_reg_FR.Add("C1", "Alsace");
-            GEOIP_REGION_NAME.Add("FR", cc_reg_FR);
+            _geoipRegionName.Add("FR", cc_reg_FR);
             Hashtable cc_reg_GA = new Hashtable();
             cc_reg_GA.Add("01", "Estuaire");
             cc_reg_GA.Add("02", "Haut-Ogooue");
@@ -1147,7 +1145,7 @@ namespace GeoIP
             cc_reg_GA.Add("07", "Ogooue-Lolo");
             cc_reg_GA.Add("08", "Ogooue-Maritime");
             cc_reg_GA.Add("09", "Woleu-Ntem");
-            GEOIP_REGION_NAME.Add("GA", cc_reg_GA);
+            _geoipRegionName.Add("GA", cc_reg_GA);
             Hashtable cc_reg_GB = new Hashtable();
             cc_reg_GB.Add("A1", "Barking and Dagenham");
             cc_reg_GB.Add("A2", "Barnet");
@@ -1383,7 +1381,7 @@ namespace GeoIP
             cc_reg_GB.Add("Z7", "Cheshire East");
             cc_reg_GB.Add("Z8", "Cheshire West and Chester");
             cc_reg_GB.Add("Z9", "Isles of Scilly");
-            GEOIP_REGION_NAME.Add("GB", cc_reg_GB);
+            _geoipRegionName.Add("GB", cc_reg_GB);
             Hashtable cc_reg_GD = new Hashtable();
             cc_reg_GD.Add("01", "Saint Andrew");
             cc_reg_GD.Add("02", "Saint David");
@@ -1391,7 +1389,7 @@ namespace GeoIP
             cc_reg_GD.Add("04", "Saint John");
             cc_reg_GD.Add("05", "Saint Mark");
             cc_reg_GD.Add("06", "Saint Patrick");
-            GEOIP_REGION_NAME.Add("GD", cc_reg_GD);
+            _geoipRegionName.Add("GD", cc_reg_GD);
             Hashtable cc_reg_GE = new Hashtable();
             cc_reg_GE.Add("01", "Abashis Raioni");
             cc_reg_GE.Add("02", "Abkhazia");
@@ -1457,7 +1455,7 @@ namespace GeoIP
             cc_reg_GE.Add("62", "Zestap'onis Raioni");
             cc_reg_GE.Add("63", "Zugdidi");
             cc_reg_GE.Add("64", "Zugdidis Raioni");
-            GEOIP_REGION_NAME.Add("GE", cc_reg_GE);
+            _geoipRegionName.Add("GE", cc_reg_GE);
             Hashtable cc_reg_GH = new Hashtable();
             cc_reg_GH.Add("01", "Greater Accra");
             cc_reg_GH.Add("02", "Ashanti");
@@ -1469,12 +1467,12 @@ namespace GeoIP
             cc_reg_GH.Add("09", "Western");
             cc_reg_GH.Add("10", "Upper East");
             cc_reg_GH.Add("11", "Upper West");
-            GEOIP_REGION_NAME.Add("GH", cc_reg_GH);
+            _geoipRegionName.Add("GH", cc_reg_GH);
             Hashtable cc_reg_GL = new Hashtable();
             cc_reg_GL.Add("01", "Nordgronland");
             cc_reg_GL.Add("02", "Ostgronland");
             cc_reg_GL.Add("03", "Vestgronland");
-            GEOIP_REGION_NAME.Add("GL", cc_reg_GL);
+            _geoipRegionName.Add("GL", cc_reg_GL);
             Hashtable cc_reg_GM = new Hashtable();
             cc_reg_GM.Add("01", "Banjul");
             cc_reg_GM.Add("02", "Lower River");
@@ -1482,7 +1480,7 @@ namespace GeoIP
             cc_reg_GM.Add("04", "Upper River");
             cc_reg_GM.Add("05", "Western");
             cc_reg_GM.Add("07", "North Bank");
-            GEOIP_REGION_NAME.Add("GM", cc_reg_GM);
+            _geoipRegionName.Add("GM", cc_reg_GM);
             Hashtable cc_reg_GN = new Hashtable();
             cc_reg_GN.Add("01", "Beyla");
             cc_reg_GN.Add("02", "Boffa");
@@ -1518,7 +1516,7 @@ namespace GeoIP
             cc_reg_GN.Add("37", "Mandiana");
             cc_reg_GN.Add("38", "Nzerekore");
             cc_reg_GN.Add("39", "Siguiri");
-            GEOIP_REGION_NAME.Add("GN", cc_reg_GN);
+            _geoipRegionName.Add("GN", cc_reg_GN);
             Hashtable cc_reg_GQ = new Hashtable();
             cc_reg_GQ.Add("03", "Annobon");
             cc_reg_GQ.Add("04", "Bioko Norte");
@@ -1527,7 +1525,7 @@ namespace GeoIP
             cc_reg_GQ.Add("07", "Kie-Ntem");
             cc_reg_GQ.Add("08", "Litoral");
             cc_reg_GQ.Add("09", "Wele-Nzas");
-            GEOIP_REGION_NAME.Add("GQ", cc_reg_GQ);
+            _geoipRegionName.Add("GQ", cc_reg_GQ);
             Hashtable cc_reg_GR = new Hashtable();
             cc_reg_GR.Add("01", "Evros");
             cc_reg_GR.Add("02", "Rodhopi");
@@ -1580,7 +1578,7 @@ namespace GeoIP
             cc_reg_GR.Add("49", "Kikladhes");
             cc_reg_GR.Add("50", "Khios");
             cc_reg_GR.Add("51", "Lesvos");
-            GEOIP_REGION_NAME.Add("GR", cc_reg_GR);
+            _geoipRegionName.Add("GR", cc_reg_GR);
             Hashtable cc_reg_GT = new Hashtable();
             cc_reg_GT.Add("01", "Alta Verapaz");
             cc_reg_GT.Add("02", "Baja Verapaz");
@@ -1604,7 +1602,7 @@ namespace GeoIP
             cc_reg_GT.Add("20", "Suchitepequez");
             cc_reg_GT.Add("21", "Totonicapan");
             cc_reg_GT.Add("22", "Zacapa");
-            GEOIP_REGION_NAME.Add("GT", cc_reg_GT);
+            _geoipRegionName.Add("GT", cc_reg_GT);
             Hashtable cc_reg_GW = new Hashtable();
             cc_reg_GW.Add("01", "Bafata");
             cc_reg_GW.Add("02", "Quinara");
@@ -1615,7 +1613,7 @@ namespace GeoIP
             cc_reg_GW.Add("10", "Gabu");
             cc_reg_GW.Add("11", "Bissau");
             cc_reg_GW.Add("12", "Biombo");
-            GEOIP_REGION_NAME.Add("GW", cc_reg_GW);
+            _geoipRegionName.Add("GW", cc_reg_GW);
             Hashtable cc_reg_GY = new Hashtable();
             cc_reg_GY.Add("10", "Barima-Waini");
             cc_reg_GY.Add("11", "Cuyuni-Mazaruni");
@@ -1627,7 +1625,7 @@ namespace GeoIP
             cc_reg_GY.Add("17", "Potaro-Siparuni");
             cc_reg_GY.Add("18", "Upper Demerara-Berbice");
             cc_reg_GY.Add("19", "Upper Takutu-Upper Essequibo");
-            GEOIP_REGION_NAME.Add("GY", cc_reg_GY);
+            _geoipRegionName.Add("GY", cc_reg_GY);
             Hashtable cc_reg_HN = new Hashtable();
             cc_reg_HN.Add("01", "Atlantida");
             cc_reg_HN.Add("02", "Choluteca");
@@ -1647,7 +1645,7 @@ namespace GeoIP
             cc_reg_HN.Add("16", "Santa Barbara");
             cc_reg_HN.Add("17", "Valle");
             cc_reg_HN.Add("18", "Yoro");
-            GEOIP_REGION_NAME.Add("HN", cc_reg_HN);
+            _geoipRegionName.Add("HN", cc_reg_HN);
             Hashtable cc_reg_HR = new Hashtable();
             cc_reg_HR.Add("01", "Bjelovarsko-Bilogorska");
             cc_reg_HR.Add("02", "Brodsko-Posavska");
@@ -1670,7 +1668,7 @@ namespace GeoIP
             cc_reg_HR.Add("19", "Zadarska");
             cc_reg_HR.Add("20", "Zagrebacka");
             cc_reg_HR.Add("21", "Grad Zagreb");
-            GEOIP_REGION_NAME.Add("HR", cc_reg_HR);
+            _geoipRegionName.Add("HR", cc_reg_HR);
             Hashtable cc_reg_HT = new Hashtable();
             cc_reg_HT.Add("03", "Nord-Ouest");
             cc_reg_HT.Add("06", "Artibonite");
@@ -1682,7 +1680,7 @@ namespace GeoIP
             cc_reg_HT.Add("13", "Sud-Est");
             cc_reg_HT.Add("14", "Grand' Anse");
             cc_reg_HT.Add("15", "Nippes");
-            GEOIP_REGION_NAME.Add("HT", cc_reg_HT);
+            _geoipRegionName.Add("HT", cc_reg_HT);
             Hashtable cc_reg_HU = new Hashtable();
             cc_reg_HU.Add("01", "Bacs-Kiskun");
             cc_reg_HU.Add("02", "Baranya");
@@ -1727,7 +1725,7 @@ namespace GeoIP
             cc_reg_HU.Add("41", "Salgotarjan");
             cc_reg_HU.Add("42", "Szekszard");
             cc_reg_HU.Add("43", "Erd");
-            GEOIP_REGION_NAME.Add("HU", cc_reg_HU);
+            _geoipRegionName.Add("HU", cc_reg_HU);
             Hashtable cc_reg_ID = new Hashtable();
             cc_reg_ID.Add("01", "Aceh");
             cc_reg_ID.Add("02", "Bali");
@@ -1762,7 +1760,7 @@ namespace GeoIP
             cc_reg_ID.Add("39", "Irian Jaya Barat");
             cc_reg_ID.Add("40", "Kepulauan Riau");
             cc_reg_ID.Add("41", "Sulawesi Barat");
-            GEOIP_REGION_NAME.Add("ID", cc_reg_ID);
+            _geoipRegionName.Add("ID", cc_reg_ID);
             Hashtable cc_reg_IE = new Hashtable();
             cc_reg_IE.Add("01", "Carlow");
             cc_reg_IE.Add("02", "Cavan");
@@ -1790,7 +1788,7 @@ namespace GeoIP
             cc_reg_IE.Add("29", "Westmeath");
             cc_reg_IE.Add("30", "Wexford");
             cc_reg_IE.Add("31", "Wicklow");
-            GEOIP_REGION_NAME.Add("IE", cc_reg_IE);
+            _geoipRegionName.Add("IE", cc_reg_IE);
             Hashtable cc_reg_IL = new Hashtable();
             cc_reg_IL.Add("01", "HaDarom");
             cc_reg_IL.Add("02", "HaMerkaz");
@@ -1798,7 +1796,7 @@ namespace GeoIP
             cc_reg_IL.Add("04", "Hefa");
             cc_reg_IL.Add("05", "Tel Aviv");
             cc_reg_IL.Add("06", "Yerushalayim");
-            GEOIP_REGION_NAME.Add("IL", cc_reg_IL);
+            _geoipRegionName.Add("IL", cc_reg_IL);
             Hashtable cc_reg_IN = new Hashtable();
             cc_reg_IN.Add("01", "Andaman and Nicobar Islands");
             cc_reg_IN.Add("02", "Andhra Pradesh");
@@ -1835,7 +1833,7 @@ namespace GeoIP
             cc_reg_IN.Add("37", "Chhattisgarh");
             cc_reg_IN.Add("38", "Jharkhand");
             cc_reg_IN.Add("39", "Uttarakhand");
-            GEOIP_REGION_NAME.Add("IN", cc_reg_IN);
+            _geoipRegionName.Add("IN", cc_reg_IN);
             Hashtable cc_reg_IQ = new Hashtable();
             cc_reg_IQ.Add("01", "Al Anbar");
             cc_reg_IQ.Add("02", "Al Basrah");
@@ -1855,7 +1853,7 @@ namespace GeoIP
             cc_reg_IQ.Add("16", "Wasit");
             cc_reg_IQ.Add("17", "An Najaf");
             cc_reg_IQ.Add("18", "Salah ad Din");
-            GEOIP_REGION_NAME.Add("IQ", cc_reg_IQ);
+            _geoipRegionName.Add("IQ", cc_reg_IQ);
             Hashtable cc_reg_IR = new Hashtable();
             cc_reg_IR.Add("01", "Azarbayjan-e Bakhtari");
             cc_reg_IR.Add("03", "Chahar Mahall va Bakhtiari");
@@ -1897,7 +1895,7 @@ namespace GeoIP
             cc_reg_IR.Add("42", "Khorasan-e Razavi");
             cc_reg_IR.Add("43", "Khorasan-e Shemali");
             cc_reg_IR.Add("44", "Alborz");
-            GEOIP_REGION_NAME.Add("IR", cc_reg_IR);
+            _geoipRegionName.Add("IR", cc_reg_IR);
             Hashtable cc_reg_IS = new Hashtable();
             cc_reg_IS.Add("03", "Arnessysla");
             cc_reg_IS.Add("05", "Austur-Hunavatnssysla");
@@ -1927,7 +1925,7 @@ namespace GeoIP
             cc_reg_IS.Add("43", "Suournes");
             cc_reg_IS.Add("44", "Vestfiroir");
             cc_reg_IS.Add("45", "Vesturland");
-            GEOIP_REGION_NAME.Add("IS", cc_reg_IS);
+            _geoipRegionName.Add("IS", cc_reg_IS);
             Hashtable cc_reg_IT = new Hashtable();
             cc_reg_IT.Add("01", "Abruzzi");
             cc_reg_IT.Add("02", "Basilicata");
@@ -1949,7 +1947,7 @@ namespace GeoIP
             cc_reg_IT.Add("18", "Umbria");
             cc_reg_IT.Add("19", "Valle d'Aosta");
             cc_reg_IT.Add("20", "Veneto");
-            GEOIP_REGION_NAME.Add("IT", cc_reg_IT);
+            _geoipRegionName.Add("IT", cc_reg_IT);
             Hashtable cc_reg_JM = new Hashtable();
             cc_reg_JM.Add("01", "Clarendon");
             cc_reg_JM.Add("02", "Hanover");
@@ -1965,7 +1963,7 @@ namespace GeoIP
             cc_reg_JM.Add("15", "Trelawny");
             cc_reg_JM.Add("16", "Westmoreland");
             cc_reg_JM.Add("17", "Kingston");
-            GEOIP_REGION_NAME.Add("JM", cc_reg_JM);
+            _geoipRegionName.Add("JM", cc_reg_JM);
             Hashtable cc_reg_JO = new Hashtable();
             cc_reg_JO.Add("02", "Al Balqa'");
             cc_reg_JO.Add("09", "Al Karak");
@@ -1979,7 +1977,7 @@ namespace GeoIP
             cc_reg_JO.Add("21", "Al Aqabah");
             cc_reg_JO.Add("22", "Jarash");
             cc_reg_JO.Add("23", "Madaba");
-            GEOIP_REGION_NAME.Add("JO", cc_reg_JO);
+            _geoipRegionName.Add("JO", cc_reg_JO);
             Hashtable cc_reg_JP = new Hashtable();
             cc_reg_JP.Add("01", "Aichi");
             cc_reg_JP.Add("02", "Akita");
@@ -2028,7 +2026,7 @@ namespace GeoIP
             cc_reg_JP.Add("45", "Yamaguchi");
             cc_reg_JP.Add("46", "Yamanashi");
             cc_reg_JP.Add("47", "Okinawa");
-            GEOIP_REGION_NAME.Add("JP", cc_reg_JP);
+            _geoipRegionName.Add("JP", cc_reg_JP);
             Hashtable cc_reg_KE = new Hashtable();
             cc_reg_KE.Add("01", "Central");
             cc_reg_KE.Add("02", "Coast");
@@ -2038,7 +2036,7 @@ namespace GeoIP
             cc_reg_KE.Add("07", "Nyanza");
             cc_reg_KE.Add("08", "Rift Valley");
             cc_reg_KE.Add("09", "Western");
-            GEOIP_REGION_NAME.Add("KE", cc_reg_KE);
+            _geoipRegionName.Add("KE", cc_reg_KE);
             Hashtable cc_reg_KG = new Hashtable();
             cc_reg_KG.Add("01", "Bishkek");
             cc_reg_KG.Add("02", "Chuy");
@@ -2049,7 +2047,7 @@ namespace GeoIP
             cc_reg_KG.Add("07", "Ysyk-Kol");
             cc_reg_KG.Add("08", "Osh");
             cc_reg_KG.Add("09", "Batken");
-            GEOIP_REGION_NAME.Add("KG", cc_reg_KG);
+            _geoipRegionName.Add("KG", cc_reg_KG);
             Hashtable cc_reg_KH = new Hashtable();
             cc_reg_KH.Add("01", "Batdambang");
             cc_reg_KH.Add("02", "Kampong Cham");
@@ -2073,17 +2071,17 @@ namespace GeoIP
             cc_reg_KH.Add("25", "Banteay Meanchey");
             cc_reg_KH.Add("29", "Batdambang");
             cc_reg_KH.Add("30", "Pailin");
-            GEOIP_REGION_NAME.Add("KH", cc_reg_KH);
+            _geoipRegionName.Add("KH", cc_reg_KH);
             Hashtable cc_reg_KI = new Hashtable();
             cc_reg_KI.Add("01", "Gilbert Islands");
             cc_reg_KI.Add("02", "Line Islands");
             cc_reg_KI.Add("03", "Phoenix Islands");
-            GEOIP_REGION_NAME.Add("KI", cc_reg_KI);
+            _geoipRegionName.Add("KI", cc_reg_KI);
             Hashtable cc_reg_KM = new Hashtable();
             cc_reg_KM.Add("01", "Anjouan");
             cc_reg_KM.Add("02", "Grande Comore");
             cc_reg_KM.Add("03", "Moheli");
-            GEOIP_REGION_NAME.Add("KM", cc_reg_KM);
+            _geoipRegionName.Add("KM", cc_reg_KM);
             Hashtable cc_reg_KN = new Hashtable();
             cc_reg_KN.Add("01", "Christ Church Nichola Town");
             cc_reg_KN.Add("02", "Saint Anne Sandy Point");
@@ -2099,7 +2097,7 @@ namespace GeoIP
             cc_reg_KN.Add("12", "Saint Thomas Lowland");
             cc_reg_KN.Add("13", "Saint Thomas Middle Island");
             cc_reg_KN.Add("15", "Trinity Palmetto Point");
-            GEOIP_REGION_NAME.Add("KN", cc_reg_KN);
+            _geoipRegionName.Add("KN", cc_reg_KN);
             Hashtable cc_reg_KP = new Hashtable();
             cc_reg_KP.Add("01", "Chagang-do");
             cc_reg_KP.Add("03", "Hamgyong-namdo");
@@ -2114,7 +2112,7 @@ namespace GeoIP
             cc_reg_KP.Add("15", "P'yongan-namdo");
             cc_reg_KP.Add("17", "Hamgyong-bukto");
             cc_reg_KP.Add("18", "Najin Sonbong-si");
-            GEOIP_REGION_NAME.Add("KP", cc_reg_KP);
+            _geoipRegionName.Add("KP", cc_reg_KP);
             Hashtable cc_reg_KR = new Hashtable();
             cc_reg_KR.Add("01", "Cheju-do");
             cc_reg_KR.Add("03", "Cholla-bukto");
@@ -2132,7 +2130,7 @@ namespace GeoIP
             cc_reg_KR.Add("19", "Taejon-jikhalsi");
             cc_reg_KR.Add("20", "Kyongsang-namdo");
             cc_reg_KR.Add("21", "Ulsan-gwangyoksi");
-            GEOIP_REGION_NAME.Add("KR", cc_reg_KR);
+            _geoipRegionName.Add("KR", cc_reg_KR);
             Hashtable cc_reg_KW = new Hashtable();
             cc_reg_KW.Add("01", "Al Ahmadi");
             cc_reg_KW.Add("02", "Al Kuwayt");
@@ -2140,7 +2138,7 @@ namespace GeoIP
             cc_reg_KW.Add("07", "Al Farwaniyah");
             cc_reg_KW.Add("08", "Hawalli");
             cc_reg_KW.Add("09", "Mubarak al Kabir");
-            GEOIP_REGION_NAME.Add("KW", cc_reg_KW);
+            _geoipRegionName.Add("KW", cc_reg_KW);
             Hashtable cc_reg_KY = new Hashtable();
             cc_reg_KY.Add("01", "Creek");
             cc_reg_KY.Add("02", "Eastern");
@@ -2150,7 +2148,7 @@ namespace GeoIP
             cc_reg_KY.Add("06", "Stake Bay");
             cc_reg_KY.Add("07", "West End");
             cc_reg_KY.Add("08", "Western");
-            GEOIP_REGION_NAME.Add("KY", cc_reg_KY);
+            _geoipRegionName.Add("KY", cc_reg_KY);
             Hashtable cc_reg_KZ = new Hashtable();
             cc_reg_KZ.Add("01", "Almaty");
             cc_reg_KZ.Add("02", "Almaty City");
@@ -2169,7 +2167,7 @@ namespace GeoIP
             cc_reg_KZ.Add("15", "East Kazakhstan");
             cc_reg_KZ.Add("16", "North Kazakhstan");
             cc_reg_KZ.Add("17", "Zhambyl");
-            GEOIP_REGION_NAME.Add("KZ", cc_reg_KZ);
+            _geoipRegionName.Add("KZ", cc_reg_KZ);
             Hashtable cc_reg_LA = new Hashtable();
             cc_reg_LA.Add("01", "Attapu");
             cc_reg_LA.Add("02", "Champasak");
@@ -2184,7 +2182,7 @@ namespace GeoIP
             cc_reg_LA.Add("13", "Xaignabouri");
             cc_reg_LA.Add("14", "Xiangkhoang");
             cc_reg_LA.Add("17", "Louangphrabang");
-            GEOIP_REGION_NAME.Add("LA", cc_reg_LA);
+            _geoipRegionName.Add("LA", cc_reg_LA);
             Hashtable cc_reg_LB = new Hashtable();
             cc_reg_LB.Add("01", "Beqaa");
             cc_reg_LB.Add("02", "Al Janub");
@@ -2197,7 +2195,7 @@ namespace GeoIP
             cc_reg_LB.Add("09", "Liban-Nord");
             cc_reg_LB.Add("10", "Aakk,r");
             cc_reg_LB.Add("11", "Baalbek-Hermel");
-            GEOIP_REGION_NAME.Add("LB", cc_reg_LB);
+            _geoipRegionName.Add("LB", cc_reg_LB);
             Hashtable cc_reg_LC = new Hashtable();
             cc_reg_LC.Add("01", "Anse-la-Raye");
             cc_reg_LC.Add("02", "Dauphin");
@@ -2210,7 +2208,7 @@ namespace GeoIP
             cc_reg_LC.Add("09", "Soufriere");
             cc_reg_LC.Add("10", "Vieux-Fort");
             cc_reg_LC.Add("11", "Praslin");
-            GEOIP_REGION_NAME.Add("LC", cc_reg_LC);
+            _geoipRegionName.Add("LC", cc_reg_LC);
             Hashtable cc_reg_LI = new Hashtable();
             cc_reg_LI.Add("01", "Balzers");
             cc_reg_LI.Add("02", "Eschen");
@@ -2225,7 +2223,7 @@ namespace GeoIP
             cc_reg_LI.Add("11", "Vaduz");
             cc_reg_LI.Add("21", "Gbarpolu");
             cc_reg_LI.Add("22", "River Gee");
-            GEOIP_REGION_NAME.Add("LI", cc_reg_LI);
+            _geoipRegionName.Add("LI", cc_reg_LI);
             Hashtable cc_reg_LK = new Hashtable();
             cc_reg_LK.Add("29", "Central");
             cc_reg_LK.Add("30", "North Central");
@@ -2236,7 +2234,7 @@ namespace GeoIP
             cc_reg_LK.Add("36", "Western");
             cc_reg_LK.Add("37", "Eastern");
             cc_reg_LK.Add("38", "Northern");
-            GEOIP_REGION_NAME.Add("LK", cc_reg_LK);
+            _geoipRegionName.Add("LK", cc_reg_LK);
             Hashtable cc_reg_LR = new Hashtable();
             cc_reg_LR.Add("01", "Bong");
             cc_reg_LR.Add("04", "Grand Cape Mount");
@@ -2255,7 +2253,7 @@ namespace GeoIP
             cc_reg_LR.Add("20", "Lofa");
             cc_reg_LR.Add("21", "Gbarpolu");
             cc_reg_LR.Add("22", "River Gee");
-            GEOIP_REGION_NAME.Add("LR", cc_reg_LR);
+            _geoipRegionName.Add("LR", cc_reg_LR);
             Hashtable cc_reg_LS = new Hashtable();
             cc_reg_LS.Add("10", "Berea");
             cc_reg_LS.Add("11", "Butha-Buthe");
@@ -2267,7 +2265,7 @@ namespace GeoIP
             cc_reg_LS.Add("17", "Qachas Nek");
             cc_reg_LS.Add("18", "Quthing");
             cc_reg_LS.Add("19", "Thaba-Tseka");
-            GEOIP_REGION_NAME.Add("LS", cc_reg_LS);
+            _geoipRegionName.Add("LS", cc_reg_LS);
             Hashtable cc_reg_LT = new Hashtable();
             cc_reg_LT.Add("56", "Alytaus Apskritis");
             cc_reg_LT.Add("57", "Kauno Apskritis");
@@ -2279,12 +2277,12 @@ namespace GeoIP
             cc_reg_LT.Add("63", "Telsiu Apskritis");
             cc_reg_LT.Add("64", "Utenos Apskritis");
             cc_reg_LT.Add("65", "Vilniaus Apskritis");
-            GEOIP_REGION_NAME.Add("LT", cc_reg_LT);
+            _geoipRegionName.Add("LT", cc_reg_LT);
             Hashtable cc_reg_LU = new Hashtable();
             cc_reg_LU.Add("01", "Diekirch");
             cc_reg_LU.Add("02", "Grevenmacher");
             cc_reg_LU.Add("03", "Luxembourg");
-            GEOIP_REGION_NAME.Add("LU", cc_reg_LU);
+            _geoipRegionName.Add("LU", cc_reg_LU);
             Hashtable cc_reg_LV = new Hashtable();
             cc_reg_LV.Add("01", "Aizkraukles");
             cc_reg_LV.Add("02", "Aluksnes");
@@ -2319,7 +2317,7 @@ namespace GeoIP
             cc_reg_LV.Add("31", "Valmieras");
             cc_reg_LV.Add("32", "Ventspils");
             cc_reg_LV.Add("33", "Ventspils");
-            GEOIP_REGION_NAME.Add("LV", cc_reg_LV);
+            _geoipRegionName.Add("LV", cc_reg_LV);
             Hashtable cc_reg_LY = new Hashtable();
             cc_reg_LY.Add("03", "Al Aziziyah");
             cc_reg_LY.Add("05", "Al Jufrah");
@@ -2346,7 +2344,7 @@ namespace GeoIP
             cc_reg_LY.Add("60", "Surt");
             cc_reg_LY.Add("61", "Tarabulus");
             cc_reg_LY.Add("62", "Yafran");
-            GEOIP_REGION_NAME.Add("LY", cc_reg_LY);
+            _geoipRegionName.Add("LY", cc_reg_LY);
             Hashtable cc_reg_MA = new Hashtable();
             cc_reg_MA.Add("45", "Grand Casablanca");
             cc_reg_MA.Add("46", "Fes-Boulemane");
@@ -2363,12 +2361,12 @@ namespace GeoIP
             cc_reg_MA.Add("57", "Tanger-Tetouan");
             cc_reg_MA.Add("58", "Taza-Al Hoceima-Taounate");
             cc_reg_MA.Add("59", "La,youne-Boujdour-Sakia El Hamra");
-            GEOIP_REGION_NAME.Add("MA", cc_reg_MA);
+            _geoipRegionName.Add("MA", cc_reg_MA);
             Hashtable cc_reg_MC = new Hashtable();
             cc_reg_MC.Add("01", "La Condamine");
             cc_reg_MC.Add("02", "Monaco");
             cc_reg_MC.Add("03", "Monte-Carlo");
-            GEOIP_REGION_NAME.Add("MC", cc_reg_MC);
+            _geoipRegionName.Add("MC", cc_reg_MC);
             Hashtable cc_reg_MD = new Hashtable();
             cc_reg_MD.Add("51", "Gagauzia");
             cc_reg_MD.Add("57", "Chisinau");
@@ -2407,7 +2405,7 @@ namespace GeoIP
             cc_reg_MD.Add("90", "Taraclia");
             cc_reg_MD.Add("91", "Telenesti");
             cc_reg_MD.Add("92", "Ungheni");
-            GEOIP_REGION_NAME.Add("MD", cc_reg_MD);
+            _geoipRegionName.Add("MD", cc_reg_MD);
             Hashtable cc_reg_MG = new Hashtable();
             cc_reg_MG.Add("01", "Antsiranana");
             cc_reg_MG.Add("02", "Fianarantsoa");
@@ -2415,7 +2413,7 @@ namespace GeoIP
             cc_reg_MG.Add("04", "Toamasina");
             cc_reg_MG.Add("05", "Antananarivo");
             cc_reg_MG.Add("06", "Toliara");
-            GEOIP_REGION_NAME.Add("MG", cc_reg_MG);
+            _geoipRegionName.Add("MG", cc_reg_MG);
             Hashtable cc_reg_MK = new Hashtable();
             cc_reg_MK.Add("01", "Aracinovo");
             cc_reg_MK.Add("02", "Bac");
@@ -2540,7 +2538,7 @@ namespace GeoIP
             cc_reg_MK.Add("C4", "Zitose");
             cc_reg_MK.Add("C5", "Zletovo");
             cc_reg_MK.Add("C6", "Zrnovci");
-            GEOIP_REGION_NAME.Add("MK", cc_reg_MK);
+            _geoipRegionName.Add("MK", cc_reg_MK);
             Hashtable cc_reg_ML = new Hashtable();
             cc_reg_ML.Add("01", "Bamako");
             cc_reg_ML.Add("03", "Kayes");
@@ -2551,7 +2549,7 @@ namespace GeoIP
             cc_reg_ML.Add("08", "Tombouctou");
             cc_reg_ML.Add("09", "Gao");
             cc_reg_ML.Add("10", "Kidal");
-            GEOIP_REGION_NAME.Add("ML", cc_reg_ML);
+            _geoipRegionName.Add("ML", cc_reg_ML);
             Hashtable cc_reg_MM = new Hashtable();
             cc_reg_MM.Add("01", "Rakhine State");
             cc_reg_MM.Add("02", "Chin State");
@@ -2568,7 +2566,7 @@ namespace GeoIP
             cc_reg_MM.Add("13", "Mon State");
             cc_reg_MM.Add("14", "Rangoon");
             cc_reg_MM.Add("17", "Yangon");
-            GEOIP_REGION_NAME.Add("MM", cc_reg_MM);
+            _geoipRegionName.Add("MM", cc_reg_MM);
             Hashtable cc_reg_MN = new Hashtable();
             cc_reg_MN.Add("01", "Arhangay");
             cc_reg_MN.Add("02", "Bayanhongor");
@@ -2594,11 +2592,11 @@ namespace GeoIP
             cc_reg_MN.Add("23", "Darhan-Uul");
             cc_reg_MN.Add("24", "Govisumber");
             cc_reg_MN.Add("25", "Orhon");
-            GEOIP_REGION_NAME.Add("MN", cc_reg_MN);
+            _geoipRegionName.Add("MN", cc_reg_MN);
             Hashtable cc_reg_MO = new Hashtable();
             cc_reg_MO.Add("01", "Ilhas");
             cc_reg_MO.Add("02", "Macau");
-            GEOIP_REGION_NAME.Add("MO", cc_reg_MO);
+            _geoipRegionName.Add("MO", cc_reg_MO);
             Hashtable cc_reg_MR = new Hashtable();
             cc_reg_MR.Add("01", "Hodh Ech Chargui");
             cc_reg_MR.Add("02", "Hodh El Gharbi");
@@ -2612,12 +2610,12 @@ namespace GeoIP
             cc_reg_MR.Add("10", "Guidimaka");
             cc_reg_MR.Add("11", "Tiris Zemmour");
             cc_reg_MR.Add("12", "Inchiri");
-            GEOIP_REGION_NAME.Add("MR", cc_reg_MR);
+            _geoipRegionName.Add("MR", cc_reg_MR);
             Hashtable cc_reg_MS = new Hashtable();
             cc_reg_MS.Add("01", "Saint Anthony");
             cc_reg_MS.Add("02", "Saint Georges");
             cc_reg_MS.Add("03", "Saint Peter");
-            GEOIP_REGION_NAME.Add("MS", cc_reg_MS);
+            _geoipRegionName.Add("MS", cc_reg_MS);
             Hashtable cc_reg_MU = new Hashtable();
             cc_reg_MU.Add("12", "Black River");
             cc_reg_MU.Add("13", "Flacq");
@@ -2631,7 +2629,7 @@ namespace GeoIP
             cc_reg_MU.Add("21", "Agalega Islands");
             cc_reg_MU.Add("22", "Cargados Carajos");
             cc_reg_MU.Add("23", "Rodrigues");
-            GEOIP_REGION_NAME.Add("MU", cc_reg_MU);
+            _geoipRegionName.Add("MU", cc_reg_MU);
             Hashtable cc_reg_MV = new Hashtable();
             cc_reg_MV.Add("01", "Seenu");
             cc_reg_MV.Add("05", "Laamu");
@@ -2653,7 +2651,7 @@ namespace GeoIP
             cc_reg_MV.Add("45", "Shaviyani");
             cc_reg_MV.Add("46", "Thaa");
             cc_reg_MV.Add("47", "Vaavu");
-            GEOIP_REGION_NAME.Add("MV", cc_reg_MV);
+            _geoipRegionName.Add("MV", cc_reg_MV);
             Hashtable cc_reg_MW = new Hashtable();
             cc_reg_MW.Add("02", "Chikwawa");
             cc_reg_MW.Add("03", "Chiradzulu");
@@ -2682,7 +2680,7 @@ namespace GeoIP
             cc_reg_MW.Add("28", "Machinga");
             cc_reg_MW.Add("29", "Mulanje");
             cc_reg_MW.Add("30", "Phalombe");
-            GEOIP_REGION_NAME.Add("MW", cc_reg_MW);
+            _geoipRegionName.Add("MW", cc_reg_MW);
             Hashtable cc_reg_MX = new Hashtable();
             cc_reg_MX.Add("01", "Aguascalientes");
             cc_reg_MX.Add("02", "Baja California");
@@ -2716,7 +2714,7 @@ namespace GeoIP
             cc_reg_MX.Add("30", "Veracruz-Llave");
             cc_reg_MX.Add("31", "Yucatan");
             cc_reg_MX.Add("32", "Zacatecas");
-            GEOIP_REGION_NAME.Add("MX", cc_reg_MX);
+            _geoipRegionName.Add("MX", cc_reg_MX);
             Hashtable cc_reg_MY = new Hashtable();
             cc_reg_MY.Add("01", "Johor");
             cc_reg_MY.Add("02", "Kedah");
@@ -2734,7 +2732,7 @@ namespace GeoIP
             cc_reg_MY.Add("15", "Labuan");
             cc_reg_MY.Add("16", "Sabah");
             cc_reg_MY.Add("17", "Putrajaya");
-            GEOIP_REGION_NAME.Add("MY", cc_reg_MY);
+            _geoipRegionName.Add("MY", cc_reg_MY);
             Hashtable cc_reg_MZ = new Hashtable();
             cc_reg_MZ.Add("01", "Cabo Delgado");
             cc_reg_MZ.Add("02", "Gaza");
@@ -2747,7 +2745,7 @@ namespace GeoIP
             cc_reg_MZ.Add("09", "Zambezia");
             cc_reg_MZ.Add("10", "Manica");
             cc_reg_MZ.Add("11", "Maputo");
-            GEOIP_REGION_NAME.Add("MZ", cc_reg_MZ);
+            _geoipRegionName.Add("MZ", cc_reg_MZ);
             Hashtable cc_reg_NA = new Hashtable();
             cc_reg_NA.Add("01", "Bethanien");
             cc_reg_NA.Add("02", "Caprivi Oos");
@@ -2787,7 +2785,7 @@ namespace GeoIP
             cc_reg_NA.Add("37", "Oshana");
             cc_reg_NA.Add("38", "Oshikoto");
             cc_reg_NA.Add("39", "Otjozondjupa");
-            GEOIP_REGION_NAME.Add("NA", cc_reg_NA);
+            _geoipRegionName.Add("NA", cc_reg_NA);
             Hashtable cc_reg_NE = new Hashtable();
             cc_reg_NE.Add("01", "Agadez");
             cc_reg_NE.Add("02", "Diffa");
@@ -2797,7 +2795,7 @@ namespace GeoIP
             cc_reg_NE.Add("06", "Tahoua");
             cc_reg_NE.Add("07", "Zinder");
             cc_reg_NE.Add("08", "Niamey");
-            GEOIP_REGION_NAME.Add("NE", cc_reg_NE);
+            _geoipRegionName.Add("NE", cc_reg_NE);
             Hashtable cc_reg_NG = new Hashtable();
             cc_reg_NG.Add("05", "Lagos");
             cc_reg_NG.Add("11", "Federal Capital Territory");
@@ -2836,7 +2834,7 @@ namespace GeoIP
             cc_reg_NG.Add("55", "Gombe");
             cc_reg_NG.Add("56", "Nassarawa");
             cc_reg_NG.Add("57", "Zamfara");
-            GEOIP_REGION_NAME.Add("NG", cc_reg_NG);
+            _geoipRegionName.Add("NG", cc_reg_NG);
             Hashtable cc_reg_NI = new Hashtable();
             cc_reg_NI.Add("01", "Boaco");
             cc_reg_NI.Add("02", "Carazo");
@@ -2856,7 +2854,7 @@ namespace GeoIP
             cc_reg_NI.Add("16", "Zelaya");
             cc_reg_NI.Add("17", "Autonoma Atlantico Norte");
             cc_reg_NI.Add("18", "Region Autonoma Atlantico Sur");
-            GEOIP_REGION_NAME.Add("NI", cc_reg_NI);
+            _geoipRegionName.Add("NI", cc_reg_NI);
             Hashtable cc_reg_NL = new Hashtable();
             cc_reg_NL.Add("01", "Drenthe");
             cc_reg_NL.Add("02", "Friesland");
@@ -2870,7 +2868,7 @@ namespace GeoIP
             cc_reg_NL.Add("11", "Zuid-Holland");
             cc_reg_NL.Add("15", "Overijssel");
             cc_reg_NL.Add("16", "Flevoland");
-            GEOIP_REGION_NAME.Add("NL", cc_reg_NL);
+            _geoipRegionName.Add("NL", cc_reg_NL);
             Hashtable cc_reg_NO = new Hashtable();
             cc_reg_NO.Add("01", "Akershus");
             cc_reg_NO.Add("02", "Aust-Agder");
@@ -2891,7 +2889,7 @@ namespace GeoIP
             cc_reg_NO.Add("18", "Troms");
             cc_reg_NO.Add("19", "Vest-Agder");
             cc_reg_NO.Add("20", "Vestfold");
-            GEOIP_REGION_NAME.Add("NO", cc_reg_NO);
+            _geoipRegionName.Add("NO", cc_reg_NO);
             Hashtable cc_reg_NP = new Hashtable();
             cc_reg_NP.Add("01", "Bagmati");
             cc_reg_NP.Add("02", "Bheri");
@@ -2907,7 +2905,7 @@ namespace GeoIP
             cc_reg_NP.Add("12", "Rapti");
             cc_reg_NP.Add("13", "Sagarmatha");
             cc_reg_NP.Add("14", "Seti");
-            GEOIP_REGION_NAME.Add("NP", cc_reg_NP);
+            _geoipRegionName.Add("NP", cc_reg_NP);
             Hashtable cc_reg_NR = new Hashtable();
             cc_reg_NR.Add("01", "Aiwo");
             cc_reg_NR.Add("02", "Anabar");
@@ -2923,7 +2921,7 @@ namespace GeoIP
             cc_reg_NR.Add("12", "Nibok");
             cc_reg_NR.Add("13", "Uaboe");
             cc_reg_NR.Add("14", "Yaren");
-            GEOIP_REGION_NAME.Add("NR", cc_reg_NR);
+            _geoipRegionName.Add("NR", cc_reg_NR);
             Hashtable cc_reg_NZ = new Hashtable();
             cc_reg_NZ.Add("10", "Chatham Islands");
             cc_reg_NZ.Add("E7", "Auckland");
@@ -2941,7 +2939,7 @@ namespace GeoIP
             cc_reg_NZ.Add("G1", "Waikato");
             cc_reg_NZ.Add("G2", "Wellington");
             cc_reg_NZ.Add("G3", "West Coast");
-            GEOIP_REGION_NAME.Add("NZ", cc_reg_NZ);
+            _geoipRegionName.Add("NZ", cc_reg_NZ);
             Hashtable cc_reg_OM = new Hashtable();
             cc_reg_OM.Add("01", "Ad Dakhiliyah");
             cc_reg_OM.Add("02", "Al Batinah");
@@ -2951,7 +2949,7 @@ namespace GeoIP
             cc_reg_OM.Add("06", "Masqat");
             cc_reg_OM.Add("07", "Musandam");
             cc_reg_OM.Add("08", "Zufar");
-            GEOIP_REGION_NAME.Add("OM", cc_reg_OM);
+            _geoipRegionName.Add("OM", cc_reg_OM);
             Hashtable cc_reg_PA = new Hashtable();
             cc_reg_PA.Add("01", "Bocas del Toro");
             cc_reg_PA.Add("02", "Chiriqui");
@@ -2963,7 +2961,7 @@ namespace GeoIP
             cc_reg_PA.Add("08", "Panama");
             cc_reg_PA.Add("09", "San Blas");
             cc_reg_PA.Add("10", "Veraguas");
-            GEOIP_REGION_NAME.Add("PA", cc_reg_PA);
+            _geoipRegionName.Add("PA", cc_reg_PA);
             Hashtable cc_reg_PE = new Hashtable();
             cc_reg_PE.Add("01", "Amazonas");
             cc_reg_PE.Add("02", "Ancash");
@@ -2990,7 +2988,7 @@ namespace GeoIP
             cc_reg_PE.Add("23", "Tacna");
             cc_reg_PE.Add("24", "Tumbes");
             cc_reg_PE.Add("25", "Ucayali");
-            GEOIP_REGION_NAME.Add("PE", cc_reg_PE);
+            _geoipRegionName.Add("PE", cc_reg_PE);
             Hashtable cc_reg_PG = new Hashtable();
             cc_reg_PG.Add("01", "Central");
             cc_reg_PG.Add("02", "Gulf");
@@ -3012,7 +3010,7 @@ namespace GeoIP
             cc_reg_PG.Add("18", "Sandaun");
             cc_reg_PG.Add("19", "Enga");
             cc_reg_PG.Add("20", "National Capital");
-            GEOIP_REGION_NAME.Add("PG", cc_reg_PG);
+            _geoipRegionName.Add("PG", cc_reg_PG);
             Hashtable cc_reg_PH = new Hashtable();
             cc_reg_PH.Add("01", "Abra");
             cc_reg_PH.Add("02", "Agusan del Norte");
@@ -3161,7 +3159,7 @@ namespace GeoIP
             cc_reg_PH.Add("N3", "Surigao del Norte");
             cc_reg_PH.Add("P1", "Zambales");
             cc_reg_PH.Add("P2", "Zamboanga");
-            GEOIP_REGION_NAME.Add("PH", cc_reg_PH);
+            _geoipRegionName.Add("PH", cc_reg_PH);
             Hashtable cc_reg_PK = new Hashtable();
             cc_reg_PK.Add("01", "Federally Administered Tribal Areas");
             cc_reg_PK.Add("02", "Balochistan");
@@ -3171,7 +3169,7 @@ namespace GeoIP
             cc_reg_PK.Add("06", "Azad Kashmir");
             cc_reg_PK.Add("07", "Northern Areas");
             cc_reg_PK.Add("08", "Islamabad");
-            GEOIP_REGION_NAME.Add("PK", cc_reg_PK);
+            _geoipRegionName.Add("PK", cc_reg_PK);
             Hashtable cc_reg_PL = new Hashtable();
             cc_reg_PL.Add("72", "Dolnoslaskie");
             cc_reg_PL.Add("73", "Kujawsko-Pomorskie");
@@ -3189,11 +3187,11 @@ namespace GeoIP
             cc_reg_PL.Add("85", "Warminsko-Mazurskie");
             cc_reg_PL.Add("86", "Wielkopolskie");
             cc_reg_PL.Add("87", "Zachodniopomorskie");
-            GEOIP_REGION_NAME.Add("PL", cc_reg_PL);
+            _geoipRegionName.Add("PL", cc_reg_PL);
             Hashtable cc_reg_PS = new Hashtable();
             cc_reg_PS.Add("GZ", "Gaza");
             cc_reg_PS.Add("WE", "West Bank");
-            GEOIP_REGION_NAME.Add("PS", cc_reg_PS);
+            _geoipRegionName.Add("PS", cc_reg_PS);
             Hashtable cc_reg_PT = new Hashtable();
             cc_reg_PT.Add("02", "Aveiro");
             cc_reg_PT.Add("03", "Beja");
@@ -3215,7 +3213,7 @@ namespace GeoIP
             cc_reg_PT.Add("21", "Vila Real");
             cc_reg_PT.Add("22", "Viseu");
             cc_reg_PT.Add("23", "Azores");
-            GEOIP_REGION_NAME.Add("PT", cc_reg_PT);
+            _geoipRegionName.Add("PT", cc_reg_PT);
             Hashtable cc_reg_PY = new Hashtable();
             cc_reg_PY.Add("01", "Alto Parana");
             cc_reg_PY.Add("02", "Amambay");
@@ -3236,7 +3234,7 @@ namespace GeoIP
             cc_reg_PY.Add("20", "Chaco");
             cc_reg_PY.Add("21", "Nueva Asuncion");
             cc_reg_PY.Add("23", "Alto Paraguay");
-            GEOIP_REGION_NAME.Add("PY", cc_reg_PY);
+            _geoipRegionName.Add("PY", cc_reg_PY);
             Hashtable cc_reg_QA = new Hashtable();
             cc_reg_QA.Add("01", "Ad Dawhah");
             cc_reg_QA.Add("02", "Al Ghuwariyah");
@@ -3249,7 +3247,7 @@ namespace GeoIP
             cc_reg_QA.Add("10", "Al Wakrah");
             cc_reg_QA.Add("11", "Jariyan al Batnah");
             cc_reg_QA.Add("12", "Umm Sa'id");
-            GEOIP_REGION_NAME.Add("QA", cc_reg_QA);
+            _geoipRegionName.Add("QA", cc_reg_QA);
             Hashtable cc_reg_RO = new Hashtable();
             cc_reg_RO.Add("01", "Alba");
             cc_reg_RO.Add("02", "Arad");
@@ -3293,11 +3291,11 @@ namespace GeoIP
             cc_reg_RO.Add("41", "Calarasi");
             cc_reg_RO.Add("42", "Giurgiu");
             cc_reg_RO.Add("43", "Ilfov");
-            GEOIP_REGION_NAME.Add("RO", cc_reg_RO);
+            _geoipRegionName.Add("RO", cc_reg_RO);
             Hashtable cc_reg_RS = new Hashtable();
             cc_reg_RS.Add("01", "Kosovo");
             cc_reg_RS.Add("02", "Vojvodina");
-            GEOIP_REGION_NAME.Add("RS", cc_reg_RS);
+            _geoipRegionName.Add("RS", cc_reg_RS);
             Hashtable cc_reg_RU = new Hashtable();
             cc_reg_RU.Add("01", "Adygeya, Republic of");
             cc_reg_RU.Add("02", "Aginsky Buryatsky AO");
@@ -3392,7 +3390,7 @@ namespace GeoIP
             cc_reg_RU.Add("91", "Krasnoyarskiy Kray");
             cc_reg_RU.Add("92", "Kamchatskiy Kray");
             cc_reg_RU.Add("93", "Zabaykal'skiy Kray");
-            GEOIP_REGION_NAME.Add("RU", cc_reg_RU);
+            _geoipRegionName.Add("RU", cc_reg_RU);
             Hashtable cc_reg_RW = new Hashtable();
             cc_reg_RW.Add("01", "Butare");
             cc_reg_RW.Add("06", "Gitarama");
@@ -3403,7 +3401,7 @@ namespace GeoIP
             cc_reg_RW.Add("13", "Nord");
             cc_reg_RW.Add("14", "Ouest");
             cc_reg_RW.Add("15", "Sud");
-            GEOIP_REGION_NAME.Add("RW", cc_reg_RW);
+            _geoipRegionName.Add("RW", cc_reg_RW);
             Hashtable cc_reg_SA = new Hashtable();
             cc_reg_SA.Add("02", "Al Bahah");
             cc_reg_SA.Add("05", "Al Madinah");
@@ -3418,7 +3416,7 @@ namespace GeoIP
             cc_reg_SA.Add("17", "Jizan");
             cc_reg_SA.Add("19", "Tabuk");
             cc_reg_SA.Add("20", "Al Jawf");
-            GEOIP_REGION_NAME.Add("SA", cc_reg_SA);
+            _geoipRegionName.Add("SA", cc_reg_SA);
             Hashtable cc_reg_SB = new Hashtable();
             cc_reg_SB.Add("03", "Malaita");
             cc_reg_SB.Add("06", "Guadalcanal");
@@ -3429,7 +3427,7 @@ namespace GeoIP
             cc_reg_SB.Add("11", "Western");
             cc_reg_SB.Add("12", "Choiseul");
             cc_reg_SB.Add("13", "Rennell and Bellona");
-            GEOIP_REGION_NAME.Add("SB", cc_reg_SB);
+            _geoipRegionName.Add("SB", cc_reg_SB);
             Hashtable cc_reg_SC = new Hashtable();
             cc_reg_SC.Add("01", "Anse aux Pins");
             cc_reg_SC.Add("02", "Anse Boileau");
@@ -3454,7 +3452,7 @@ namespace GeoIP
             cc_reg_SC.Add("21", "Port Glaud");
             cc_reg_SC.Add("22", "Saint Louis");
             cc_reg_SC.Add("23", "Takamaka");
-            GEOIP_REGION_NAME.Add("SC", cc_reg_SC);
+            _geoipRegionName.Add("SC", cc_reg_SC);
             Hashtable cc_reg_SD = new Hashtable();
             cc_reg_SD.Add("27", "Al Wusta");
             cc_reg_SD.Add("28", "Al Istiwa'iyah");
@@ -3467,7 +3465,7 @@ namespace GeoIP
             cc_reg_SD.Add("35", "Upper Nile");
             cc_reg_SD.Add("40", "Al Wahadah State");
             cc_reg_SD.Add("44", "Central Equatoria State");
-            GEOIP_REGION_NAME.Add("SD", cc_reg_SD);
+            _geoipRegionName.Add("SD", cc_reg_SD);
             Hashtable cc_reg_SE = new Hashtable();
             cc_reg_SE.Add("02", "Blekinge Lan");
             cc_reg_SE.Add("03", "Gavleborgs Lan");
@@ -3490,12 +3488,12 @@ namespace GeoIP
             cc_reg_SE.Add("26", "Stockholms Lan");
             cc_reg_SE.Add("27", "Skane Lan");
             cc_reg_SE.Add("28", "Vastra Gotaland");
-            GEOIP_REGION_NAME.Add("SE", cc_reg_SE);
+            _geoipRegionName.Add("SE", cc_reg_SE);
             Hashtable cc_reg_SH = new Hashtable();
             cc_reg_SH.Add("01", "Ascension");
             cc_reg_SH.Add("02", "Saint Helena");
             cc_reg_SH.Add("03", "Tristan da Cunha");
-            GEOIP_REGION_NAME.Add("SH", cc_reg_SH);
+            _geoipRegionName.Add("SH", cc_reg_SH);
             Hashtable cc_reg_SI = new Hashtable();
             cc_reg_SI.Add("01", "Ajdovscina Commune");
             cc_reg_SI.Add("02", "Beltinci Commune");
@@ -3692,7 +3690,7 @@ namespace GeoIP
             cc_reg_SI.Add("N8", "Zuzemberk Commune");
             cc_reg_SI.Add("N9", "Apace Commune");
             cc_reg_SI.Add("O1", "Cirkulane Commune");
-            GEOIP_REGION_NAME.Add("SI", cc_reg_SI);
+            _geoipRegionName.Add("SI", cc_reg_SI);
             Hashtable cc_reg_SK = new Hashtable();
             cc_reg_SK.Add("01", "Banska Bystrica");
             cc_reg_SK.Add("02", "Bratislava");
@@ -3702,13 +3700,13 @@ namespace GeoIP
             cc_reg_SK.Add("06", "Trencin");
             cc_reg_SK.Add("07", "Trnava");
             cc_reg_SK.Add("08", "Zilina");
-            GEOIP_REGION_NAME.Add("SK", cc_reg_SK);
+            _geoipRegionName.Add("SK", cc_reg_SK);
             Hashtable cc_reg_SL = new Hashtable();
             cc_reg_SL.Add("01", "Eastern");
             cc_reg_SL.Add("02", "Northern");
             cc_reg_SL.Add("03", "Southern");
             cc_reg_SL.Add("04", "Western Area");
-            GEOIP_REGION_NAME.Add("SL", cc_reg_SL);
+            _geoipRegionName.Add("SL", cc_reg_SL);
             Hashtable cc_reg_SM = new Hashtable();
             cc_reg_SM.Add("01", "Acquaviva");
             cc_reg_SM.Add("02", "Chiesanuova");
@@ -3719,7 +3717,7 @@ namespace GeoIP
             cc_reg_SM.Add("07", "San Marino");
             cc_reg_SM.Add("08", "Monte Giardino");
             cc_reg_SM.Add("09", "Serravalle");
-            GEOIP_REGION_NAME.Add("SM", cc_reg_SM);
+            _geoipRegionName.Add("SM", cc_reg_SM);
             Hashtable cc_reg_SN = new Hashtable();
             cc_reg_SN.Add("01", "Dakar");
             cc_reg_SN.Add("03", "Diourbel");
@@ -3732,7 +3730,7 @@ namespace GeoIP
             cc_reg_SN.Add("13", "Louga");
             cc_reg_SN.Add("14", "Saint-Louis");
             cc_reg_SN.Add("15", "Matam");
-            GEOIP_REGION_NAME.Add("SN", cc_reg_SN);
+            _geoipRegionName.Add("SN", cc_reg_SN);
             Hashtable cc_reg_SO = new Hashtable();
             cc_reg_SO.Add("01", "Bakool");
             cc_reg_SO.Add("02", "Banaadir");
@@ -3754,7 +3752,7 @@ namespace GeoIP
             cc_reg_SO.Add("20", "Woqooyi Galbeed");
             cc_reg_SO.Add("21", "Awdal");
             cc_reg_SO.Add("22", "Sool");
-            GEOIP_REGION_NAME.Add("SO", cc_reg_SO);
+            _geoipRegionName.Add("SO", cc_reg_SO);
             Hashtable cc_reg_SR = new Hashtable();
             cc_reg_SR.Add("10", "Brokopondo");
             cc_reg_SR.Add("11", "Commewijne");
@@ -3766,7 +3764,7 @@ namespace GeoIP
             cc_reg_SR.Add("17", "Saramacca");
             cc_reg_SR.Add("18", "Sipaliwini");
             cc_reg_SR.Add("19", "Wanica");
-            GEOIP_REGION_NAME.Add("SR", cc_reg_SR);
+            _geoipRegionName.Add("SR", cc_reg_SR);
             Hashtable cc_reg_SS = new Hashtable();
             cc_reg_SS.Add("01", "Central Equatoria");
             cc_reg_SS.Add("02", "Eastern Equatoria");
@@ -3778,11 +3776,11 @@ namespace GeoIP
             cc_reg_SS.Add("08", "Warrap");
             cc_reg_SS.Add("09", "Western Bahr el Ghazal");
             cc_reg_SS.Add("10", "Western Equatoria");
-            GEOIP_REGION_NAME.Add("SS", cc_reg_SS);
+            _geoipRegionName.Add("SS", cc_reg_SS);
             Hashtable cc_reg_ST = new Hashtable();
             cc_reg_ST.Add("01", "Principe");
             cc_reg_ST.Add("02", "Sao Tome");
-            GEOIP_REGION_NAME.Add("ST", cc_reg_ST);
+            _geoipRegionName.Add("ST", cc_reg_ST);
             Hashtable cc_reg_SV = new Hashtable();
             cc_reg_SV.Add("01", "Ahuachapan");
             cc_reg_SV.Add("02", "Cabanas");
@@ -3798,7 +3796,7 @@ namespace GeoIP
             cc_reg_SV.Add("12", "San Vicente");
             cc_reg_SV.Add("13", "Sonsonate");
             cc_reg_SV.Add("14", "Usulutan");
-            GEOIP_REGION_NAME.Add("SV", cc_reg_SV);
+            _geoipRegionName.Add("SV", cc_reg_SV);
             Hashtable cc_reg_SY = new Hashtable();
             cc_reg_SY.Add("01", "Al Hasakah");
             cc_reg_SY.Add("02", "Al Ladhiqiyah");
@@ -3814,14 +3812,14 @@ namespace GeoIP
             cc_reg_SY.Add("12", "Idlib");
             cc_reg_SY.Add("13", "Dimashq");
             cc_reg_SY.Add("14", "Tartus");
-            GEOIP_REGION_NAME.Add("SY", cc_reg_SY);
+            _geoipRegionName.Add("SY", cc_reg_SY);
             Hashtable cc_reg_SZ = new Hashtable();
             cc_reg_SZ.Add("01", "Hhohho");
             cc_reg_SZ.Add("02", "Lubombo");
             cc_reg_SZ.Add("03", "Manzini");
             cc_reg_SZ.Add("04", "Shiselweni");
             cc_reg_SZ.Add("05", "Praslin");
-            GEOIP_REGION_NAME.Add("SZ", cc_reg_SZ);
+            _geoipRegionName.Add("SZ", cc_reg_SZ);
             Hashtable cc_reg_TD = new Hashtable();
             cc_reg_TD.Add("01", "Batha");
             cc_reg_TD.Add("02", "Biltine");
@@ -3837,14 +3835,14 @@ namespace GeoIP
             cc_reg_TD.Add("12", "Ouaddai");
             cc_reg_TD.Add("13", "Salamat");
             cc_reg_TD.Add("14", "Tandjile");
-            GEOIP_REGION_NAME.Add("TD", cc_reg_TD);
+            _geoipRegionName.Add("TD", cc_reg_TD);
             Hashtable cc_reg_TG = new Hashtable();
             cc_reg_TG.Add("22", "Centrale");
             cc_reg_TG.Add("23", "Kara");
             cc_reg_TG.Add("24", "Maritime");
             cc_reg_TG.Add("25", "Plateaux");
             cc_reg_TG.Add("26", "Savanes");
-            GEOIP_REGION_NAME.Add("TG", cc_reg_TG);
+            _geoipRegionName.Add("TG", cc_reg_TG);
             Hashtable cc_reg_TH = new Hashtable();
             cc_reg_TH.Add("01", "Mae Hong Son");
             cc_reg_TH.Add("02", "Chiang Mai");
@@ -3925,19 +3923,19 @@ namespace GeoIP
             cc_reg_TH.Add("78", "Mukdahan");
             cc_reg_TH.Add("79", "Nong Bua Lamphu");
             cc_reg_TH.Add("80", "Sa Kaeo");
-            GEOIP_REGION_NAME.Add("TH", cc_reg_TH);
+            _geoipRegionName.Add("TH", cc_reg_TH);
             Hashtable cc_reg_TJ = new Hashtable();
             cc_reg_TJ.Add("01", "Kuhistoni Badakhshon");
             cc_reg_TJ.Add("02", "Khatlon");
             cc_reg_TJ.Add("03", "Sughd");
-            GEOIP_REGION_NAME.Add("TJ", cc_reg_TJ);
+            _geoipRegionName.Add("TJ", cc_reg_TJ);
             Hashtable cc_reg_TM = new Hashtable();
             cc_reg_TM.Add("01", "Ahal");
             cc_reg_TM.Add("02", "Balkan");
             cc_reg_TM.Add("03", "Dashoguz");
             cc_reg_TM.Add("04", "Lebap");
             cc_reg_TM.Add("05", "Mary");
-            GEOIP_REGION_NAME.Add("TM", cc_reg_TM);
+            _geoipRegionName.Add("TM", cc_reg_TM);
             Hashtable cc_reg_TN = new Hashtable();
             cc_reg_TN.Add("02", "Kasserine");
             cc_reg_TN.Add("03", "Kairouan");
@@ -3963,12 +3961,12 @@ namespace GeoIP
             cc_reg_TN.Add("37", "Zaghouan");
             cc_reg_TN.Add("38", "Aiana");
             cc_reg_TN.Add("39", "Manouba");
-            GEOIP_REGION_NAME.Add("TN", cc_reg_TN);
+            _geoipRegionName.Add("TN", cc_reg_TN);
             Hashtable cc_reg_TO = new Hashtable();
             cc_reg_TO.Add("01", "Ha");
             cc_reg_TO.Add("02", "Tongatapu");
             cc_reg_TO.Add("03", "Vava");
-            GEOIP_REGION_NAME.Add("TO", cc_reg_TO);
+            _geoipRegionName.Add("TO", cc_reg_TO);
             Hashtable cc_reg_TR = new Hashtable();
             cc_reg_TR.Add("02", "Adiyaman");
             cc_reg_TR.Add("03", "Afyonkarahisar");
@@ -4051,7 +4049,7 @@ namespace GeoIP
             cc_reg_TR.Add("91", "Osmaniye");
             cc_reg_TR.Add("92", "Yalova");
             cc_reg_TR.Add("93", "Duzce");
-            GEOIP_REGION_NAME.Add("TR", cc_reg_TR);
+            _geoipRegionName.Add("TR", cc_reg_TR);
             Hashtable cc_reg_TT = new Hashtable();
             cc_reg_TT.Add("01", "Arima");
             cc_reg_TT.Add("02", "Caroni");
@@ -4065,13 +4063,13 @@ namespace GeoIP
             cc_reg_TT.Add("10", "San Fernando");
             cc_reg_TT.Add("11", "Tobago");
             cc_reg_TT.Add("12", "Victoria");
-            GEOIP_REGION_NAME.Add("TT", cc_reg_TT);
+            _geoipRegionName.Add("TT", cc_reg_TT);
             Hashtable cc_reg_TW = new Hashtable();
             cc_reg_TW.Add("01", "Fu-chien");
             cc_reg_TW.Add("02", "Kao-hsiung");
             cc_reg_TW.Add("03", "T'ai-pei");
             cc_reg_TW.Add("04", "T'ai-wan");
-            GEOIP_REGION_NAME.Add("TW", cc_reg_TW);
+            _geoipRegionName.Add("TW", cc_reg_TW);
             Hashtable cc_reg_TZ = new Hashtable();
             cc_reg_TZ.Add("02", "Pwani");
             cc_reg_TZ.Add("03", "Dodoma");
@@ -4099,7 +4097,7 @@ namespace GeoIP
             cc_reg_TZ.Add("25", "Zanzibar Urban");
             cc_reg_TZ.Add("26", "Arusha");
             cc_reg_TZ.Add("27", "Manyara");
-            GEOIP_REGION_NAME.Add("TZ", cc_reg_TZ);
+            _geoipRegionName.Add("TZ", cc_reg_TZ);
             Hashtable cc_reg_UA = new Hashtable();
             cc_reg_UA.Add("01", "Cherkas'ka Oblast'");
             cc_reg_UA.Add("02", "Chernihivs'ka Oblast'");
@@ -4128,7 +4126,7 @@ namespace GeoIP
             cc_reg_UA.Add("25", "Zakarpats'ka Oblast'");
             cc_reg_UA.Add("26", "Zaporiz'ka Oblast'");
             cc_reg_UA.Add("27", "Zhytomyrs'ka Oblast'");
-            GEOIP_REGION_NAME.Add("UA", cc_reg_UA);
+            _geoipRegionName.Add("UA", cc_reg_UA);
             Hashtable cc_reg_UG = new Hashtable();
             cc_reg_UG.Add("26", "Apac");
             cc_reg_UG.Add("28", "Bundibugyo");
@@ -4185,7 +4183,7 @@ namespace GeoIP
             cc_reg_UG.Add("95", "Soroti");
             cc_reg_UG.Add("96", "Wakiso");
             cc_reg_UG.Add("97", "Yumbe");
-            GEOIP_REGION_NAME.Add("UG", cc_reg_UG);
+            _geoipRegionName.Add("UG", cc_reg_UG);
             Hashtable cc_reg_US = new Hashtable();
             cc_reg_US.Add("AA", "Armed Forces Americas");
             cc_reg_US.Add("AE", "Armed Forces Europe, Middle East, & Canada");
@@ -4249,7 +4247,7 @@ namespace GeoIP
             cc_reg_US.Add("WI", "Wisconsin");
             cc_reg_US.Add("WV", "West Virginia");
             cc_reg_US.Add("WY", "Wyoming");
-            GEOIP_REGION_NAME.Add("US", cc_reg_US);
+            _geoipRegionName.Add("US", cc_reg_US);
             Hashtable cc_reg_UY = new Hashtable();
             cc_reg_UY.Add("01", "Artigas");
             cc_reg_UY.Add("02", "Canelones");
@@ -4270,7 +4268,7 @@ namespace GeoIP
             cc_reg_UY.Add("17", "Soriano");
             cc_reg_UY.Add("18", "Tacuarembo");
             cc_reg_UY.Add("19", "Treinta y Tres");
-            GEOIP_REGION_NAME.Add("UY", cc_reg_UY);
+            _geoipRegionName.Add("UY", cc_reg_UY);
             Hashtable cc_reg_UZ = new Hashtable();
             cc_reg_UZ.Add("01", "Andijon");
             cc_reg_UZ.Add("02", "Bukhoro");
@@ -4286,7 +4284,7 @@ namespace GeoIP
             cc_reg_UZ.Add("12", "Surkhondaryo");
             cc_reg_UZ.Add("13", "Toshkent");
             cc_reg_UZ.Add("14", "Toshkent");
-            GEOIP_REGION_NAME.Add("UZ", cc_reg_UZ);
+            _geoipRegionName.Add("UZ", cc_reg_UZ);
             Hashtable cc_reg_VC = new Hashtable();
             cc_reg_VC.Add("01", "Charlotte");
             cc_reg_VC.Add("02", "Saint Andrew");
@@ -4294,7 +4292,7 @@ namespace GeoIP
             cc_reg_VC.Add("04", "Saint George");
             cc_reg_VC.Add("05", "Saint Patrick");
             cc_reg_VC.Add("06", "Grenadines");
-            GEOIP_REGION_NAME.Add("VC", cc_reg_VC);
+            _geoipRegionName.Add("VC", cc_reg_VC);
             Hashtable cc_reg_VE = new Hashtable();
             cc_reg_VE.Add("01", "Amazonas");
             cc_reg_VE.Add("02", "Anzoategui");
@@ -4321,7 +4319,7 @@ namespace GeoIP
             cc_reg_VE.Add("24", "Dependencias Federales");
             cc_reg_VE.Add("25", "Distrito Federal");
             cc_reg_VE.Add("26", "Vargas");
-            GEOIP_REGION_NAME.Add("VE", cc_reg_VE);
+            _geoipRegionName.Add("VE", cc_reg_VE);
             Hashtable cc_reg_VN = new Hashtable();
             cc_reg_VN.Add("01", "An Giang");
             cc_reg_VN.Add("03", "Ben Tre");
@@ -4386,7 +4384,7 @@ namespace GeoIP
             cc_reg_VN.Add("91", "Dak Nong");
             cc_reg_VN.Add("92", "Dien Bien");
             cc_reg_VN.Add("93", "Hau Giang");
-            GEOIP_REGION_NAME.Add("VN", cc_reg_VN);
+            _geoipRegionName.Add("VN", cc_reg_VN);
             Hashtable cc_reg_VU = new Hashtable();
             cc_reg_VU.Add("05", "Ambrym");
             cc_reg_VU.Add("06", "Aoba");
@@ -4402,7 +4400,7 @@ namespace GeoIP
             cc_reg_VU.Add("16", "Malampa");
             cc_reg_VU.Add("17", "Penama");
             cc_reg_VU.Add("18", "Shefa");
-            GEOIP_REGION_NAME.Add("VU", cc_reg_VU);
+            _geoipRegionName.Add("VU", cc_reg_VU);
             Hashtable cc_reg_WS = new Hashtable();
             cc_reg_WS.Add("02", "Aiga-i-le-Tai");
             cc_reg_WS.Add("03", "Atua");
@@ -4414,7 +4412,7 @@ namespace GeoIP
             cc_reg_WS.Add("09", "Satupa");
             cc_reg_WS.Add("10", "Tuamasaga");
             cc_reg_WS.Add("11", "Vaisigano");
-            GEOIP_REGION_NAME.Add("WS", cc_reg_WS);
+            _geoipRegionName.Add("WS", cc_reg_WS);
             Hashtable cc_reg_YE = new Hashtable();
             cc_reg_YE.Add("01", "Abyan");
             cc_reg_YE.Add("02", "Adan");
@@ -4441,7 +4439,7 @@ namespace GeoIP
             cc_reg_YE.Add("23", "Ibb");
             cc_reg_YE.Add("24", "Lahij");
             cc_reg_YE.Add("25", "Taizz");
-            GEOIP_REGION_NAME.Add("YE", cc_reg_YE);
+            _geoipRegionName.Add("YE", cc_reg_YE);
             Hashtable cc_reg_ZA = new Hashtable();
             cc_reg_ZA.Add("01", "North-Western Province");
             cc_reg_ZA.Add("02", "KwaZulu-Natal");
@@ -4453,7 +4451,7 @@ namespace GeoIP
             cc_reg_ZA.Add("09", "Limpopo");
             cc_reg_ZA.Add("10", "North-West");
             cc_reg_ZA.Add("11", "Western Cape");
-            GEOIP_REGION_NAME.Add("ZA", cc_reg_ZA);
+            _geoipRegionName.Add("ZA", cc_reg_ZA);
             Hashtable cc_reg_ZM = new Hashtable();
             cc_reg_ZM.Add("01", "Western");
             cc_reg_ZM.Add("02", "Central");
@@ -4464,7 +4462,7 @@ namespace GeoIP
             cc_reg_ZM.Add("07", "Southern");
             cc_reg_ZM.Add("08", "Copperbelt");
             cc_reg_ZM.Add("09", "Lusaka");
-            GEOIP_REGION_NAME.Add("ZM", cc_reg_ZM);
+            _geoipRegionName.Add("ZM", cc_reg_ZM);
             Hashtable cc_reg_ZW = new Hashtable();
             cc_reg_ZW.Add("01", "Manicaland");
             cc_reg_ZW.Add("02", "Midlands");
@@ -4476,7 +4474,7 @@ namespace GeoIP
             cc_reg_ZW.Add("08", "Masvingo");
             cc_reg_ZW.Add("09", "Bulawayo");
             cc_reg_ZW.Add("10", "Harare");
-            GEOIP_REGION_NAME.Add("ZW", cc_reg_ZW);
+            _geoipRegionName.Add("ZW", cc_reg_ZW);
         }
     }
 }
