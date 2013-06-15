@@ -31,7 +31,7 @@ namespace GeoIP
           */
         public DatabaseInfo(String info)
         {
-            this._info = info;
+            _info = info;
         }
 
         public int GetTypeCode()
@@ -40,13 +40,11 @@ namespace GeoIP
             {
                 return DatabaseTypeCodes.COUNTRY_EDITION;
             }
-            else
-            {
-                // Get the type code from the database info string and then
-                // subtract 105 from the value to preserve compatability with
-                // databases from April 2003 and earlier.
-                return Convert.ToInt32(_info.Substring(4, 3)) - 105;
-            }
+            
+            // Get the type code from the database info string and then
+            // subtract 105 from the value to preserve compatability with
+            // databases from April 2003 and earlier.
+            return Convert.ToInt32(_info.Substring(4, 3)) - 105;
         }
 
         /**
@@ -56,7 +54,7 @@ namespace GeoIP
          */
         public bool IsPremium()
         {
-            return _info.IndexOf("FREE") < 0;
+            return _info.IndexOf("FREE", StringComparison.Ordinal) < 0;
         }
 
         /**
@@ -68,7 +66,7 @@ namespace GeoIP
         {
             for (int i = 0; i < _info.Length - 9; i++)
             {
-                if (Char.IsWhiteSpace(_info[i]) == true)
+                if (Char.IsWhiteSpace(_info[i]))
                 {
                     String dateString = _info.Substring(i + 1, 8);
                     try
