@@ -13,7 +13,7 @@ namespace GeoIP
 
         public static String GetRegionName(String ccode, String region)
         {
-            if (region == null || region == "00" | !Names.Value.ContainsKey(ccode))
+            if (ccode == null || region == null || region == "00")
             {
                 return null;
             }
@@ -24,7 +24,7 @@ namespace GeoIP
         private static StringDictionary ReadRegionNames()
         {
             StringDictionary nameLookup = new StringDictionary();
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("RegionNameSource.txt"))
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("GeoIP.RegionNameSource.txt"))
             using (StreamReader reader = new StreamReader(stream))
             {
                 while (!reader.EndOfStream)
