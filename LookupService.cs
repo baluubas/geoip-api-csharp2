@@ -38,18 +38,12 @@ namespace GeoIP
 
         public LookupService(String databaseFile, int options)
         {
-            try
-            {
-                _dbReader = options == LookupOptions.GEOIP_MEMORY_CACHE 
-                    ? new StreamDbReader(databaseFile) 
-                    : new CachedDbReader(databaseFile);
 
-                Init();
-            }
-            catch (SystemException)
-            {
-                Trace.WriteLine("cannot open file " + databaseFile + "\n");
-            }
+            _dbReader = options == LookupOptions.GEOIP_MEMORY_CACHE
+                ? new StreamDbReader(databaseFile)
+                : new CachedDbReader(databaseFile);
+
+            Init();
         }
 
         public LookupService(String databaseFile)
