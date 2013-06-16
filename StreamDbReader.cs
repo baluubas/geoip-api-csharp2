@@ -4,6 +4,7 @@ namespace GeoIP
 {
     public class StreamDbReader : IDbReader
     {
+        private static readonly object pointerLock = new object();
         private readonly Stream _fileStream;
 
         public StreamDbReader(string dbPath) : this(new FileStream(dbPath, FileMode.Open, FileAccess.Read))
@@ -18,19 +19,21 @@ namespace GeoIP
 
         public int Length { get; private set; }
 
-        public void Seek(int pos, SeekOrigin origin)
+        public byte[] Read(int position, int count)
         {
-            _fileStream.Seek(pos, origin);
+            var buffer = new byte[count];
+            lock (pointerLock)
+            {
+                _fileStream.Seek(position, SeekOrigin.Begin);
+                _fileStream.Read(buffer, 0, count);
+            }
+  
+            return buffer;
         }
 
-        public void Read(byte[] buffer, int offset, int length)
+        public byte ReadByte(int position)
         {
-            _fileStream.Read(buffer, offset, length);
-        }
-
-        public object ReadByte()
-        {
-            return _fileStream.ReadByte();
+            return Read(position, 1)[0];
         }
 
         public void Close()

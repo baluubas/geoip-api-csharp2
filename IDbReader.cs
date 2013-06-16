@@ -2,12 +2,14 @@
 
 namespace GeoIP
 {
+    /// <summary>
+    /// An abstraction of the database file. Implementation must be thread-safe
+    /// </summary>
     public interface IDbReader
     {
         int Length { get; }
-        void Seek(int pos, SeekOrigin origin);
-        void Read(byte[] buffer, int offset, int length);
-        object ReadByte();
+        byte[] Read(int position, int count);
+        byte ReadByte(int position);
         void Close();
     }
 }

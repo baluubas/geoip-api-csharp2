@@ -52,93 +52,97 @@ namespace GeoIP
 
         private void Init()
         {
-            byte[] delim = new byte[3];
-            byte[] buf = new byte[DbFlags.SEGMENT_RECORD_LENGTH];
             _databaseType = DatabaseTypeCodes.COUNTRY_EDITION;
             _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
 
-            lock (_ioLock)
+            var position = FromEnd(-3);
+            int i;
+            for (i = 0; i < DbFlags.STRUCTURE_INFO_MAX_SIZE; i++)
             {
-                _dbReader.Seek(-3, SeekOrigin.End);
-                int i;
-                for (i = 0; i < DbFlags.STRUCTURE_INFO_MAX_SIZE; i++)
+                var delim = _dbReader.Read(position, 3);
+                position += 3;
+
+                if (delim[0] == 255 && delim[1] == 255 && delim[2] == 255)
                 {
-                    _dbReader.Read(delim, 0, 3);
-                    if (delim[0] == 255 && delim[1] == 255 && delim[2] == 255)
+                    _databaseType = _dbReader.ReadByte(position);
+                    position++;
+
+                    if (_databaseType >= 106)
                     {
-                        _databaseType = Convert.ToByte(_dbReader.ReadByte());
-                        if (_databaseType >= 106)
-                        {
-                            // Backward compatibility with databases from April 2003 and earlier
-                            _databaseType -= 105;
-                        }
-                        // Determine the database type.
-                        if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV0)
-                        {
+                        // Backward compatibility with databases from April 2003 and earlier
+                        _databaseType -= 105;
+                    }
+                    // Determine the database type.
+                    switch (_databaseType)
+                    {
+                        case DatabaseTypeCodes.REGION_EDITION_REV0:
                             _databaseSegments = new int[1];
                             _databaseSegments[0] = DbFlags.STATE_BEGIN_REV0;
                             _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
-                        }
-                        else if (_databaseType == DatabaseTypeCodes.REGION_EDITION_REV1)
-                        {
+                            break;
+                        case DatabaseTypeCodes.REGION_EDITION_REV1:
                             _databaseSegments = new int[1];
                             _databaseSegments[0] = DbFlags.STATE_BEGIN_REV1;
                             _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
-                        }
-                        else if (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV0 ||
-                                 _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1 ||
-                                 _databaseType == DatabaseTypeCodes.ORG_EDITION ||
-                                 _databaseType == DatabaseTypeCodes.ORG_EDITION_V6 ||
-                                 _databaseType == DatabaseTypeCodes.ISP_EDITION ||
-                                 _databaseType == DatabaseTypeCodes.ISP_EDITION_V6 ||
-                                 _databaseType == DatabaseTypeCodes.ASNUM_EDITION ||
-                                 _databaseType == DatabaseTypeCodes.ASNUM_EDITION_V6 ||
-                                 _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1 ||
-                                 _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1_V6 ||
-                                 _databaseType == DatabaseTypeCodes.CITY_EDITION_REV0_V6 ||
-                                 _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1_V6
-                            )
-                        {
-                            _databaseSegments = new int[1];
-                            _databaseSegments[0] = 0;
-                            if (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV0 ||
-                                _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1 ||
-                                _databaseType == DatabaseTypeCodes.ASNUM_EDITION_V6 ||
-                                _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1 ||
-                                _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1_V6 ||
-                                _databaseType == DatabaseTypeCodes.CITY_EDITION_REV0_V6 ||
-                                _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1_V6 ||
-                                _databaseType == DatabaseTypeCodes.ASNUM_EDITION
-                                )
+                            break;
+                        case DatabaseTypeCodes.CITY_EDITION_REV1_V6:
+                        case DatabaseTypeCodes.CITY_EDITION_REV0_V6:
+                        case DatabaseTypeCodes.NETSPEED_EDITION_REV1_V6:
+                        case DatabaseTypeCodes.NETSPEED_EDITION_REV1:
+                        case DatabaseTypeCodes.ASNUM_EDITION_V6:
+                        case DatabaseTypeCodes.ASNUM_EDITION:
+                        case DatabaseTypeCodes.ISP_EDITION_V6:
+                        case DatabaseTypeCodes.ISP_EDITION:
+                        case DatabaseTypeCodes.ORG_EDITION_V6:
+                        case DatabaseTypeCodes.ORG_EDITION:
+                        case DatabaseTypeCodes.CITY_EDITION_REV1:
+                        case DatabaseTypeCodes.CITY_EDITION_REV0:
                             {
-                                _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
-                            }
-                            else
-                            {
-                                _recordLength = DbFlags.ORG_RECORD_LENGTH;
-                            }
-                            _dbReader.Read(buf, 0, DbFlags.SEGMENT_RECORD_LENGTH);
-                            int j;
-                            for (j = 0; j < DbFlags.SEGMENT_RECORD_LENGTH; j++)
-                            {
-                                _databaseSegments[0] += (UnsignedByteToInt(buf[j]) << (j * 8));
-                            }
-                        }
-                        break;
-                    }
+                                _databaseSegments = new int[1];
+                                _databaseSegments[0] = 0;
+                                _recordLength = IsStandardRecordLengthType() ? DbFlags.STANDARD_RECORD_LENGTH : DbFlags.ORG_RECORD_LENGTH;
+                                var buf = _dbReader.Read(position, DbFlags.SEGMENT_RECORD_LENGTH);
 
-                    _dbReader.Seek(-4, SeekOrigin.Current);
+                                int j;
+                                for (j = 0; j < DbFlags.SEGMENT_RECORD_LENGTH; j++)
+                                {
+                                    _databaseSegments[0] += (UnsignedByteToInt(buf[j]) << (j * 8));
+                                }
+                            }
+                            break;
+                    }
+                    break;
                 }
-                if ((_databaseType == DatabaseTypeCodes.COUNTRY_EDITION) ||
-                    (_databaseType == DatabaseTypeCodes.COUNTRY_EDITION_V6) ||
-                    (_databaseType == DatabaseTypeCodes.PROXY_EDITION) ||
-                    (_databaseType == DatabaseTypeCodes.NETSPEED_EDITION))
-                {
-                    _databaseSegments = new int[1];
-                    _databaseSegments[0] = DbFlags.COUNTRY_BEGIN;
-                    _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
-                }
+
+                position += -4;
             }
+
+            if ((_databaseType == DatabaseTypeCodes.COUNTRY_EDITION) ||
+                (_databaseType == DatabaseTypeCodes.COUNTRY_EDITION_V6) ||
+                (_databaseType == DatabaseTypeCodes.PROXY_EDITION) ||
+                (_databaseType == DatabaseTypeCodes.NETSPEED_EDITION))
+            {
+                _databaseSegments = new int[1];
+                _databaseSegments[0] = DbFlags.COUNTRY_BEGIN;
+                _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
+            }
+        }
+
+        private bool IsStandardRecordLengthType()
+        {
+            return _databaseType == DatabaseTypeCodes.CITY_EDITION_REV0 ||
+                   _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1 ||
+                   _databaseType == DatabaseTypeCodes.ASNUM_EDITION_V6 ||
+                   _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1 ||
+                   _databaseType == DatabaseTypeCodes.NETSPEED_EDITION_REV1_V6 ||
+                   _databaseType == DatabaseTypeCodes.CITY_EDITION_REV0_V6 ||
+                   _databaseType == DatabaseTypeCodes.CITY_EDITION_REV1_V6 ||
+                   _databaseType == DatabaseTypeCodes.ASNUM_EDITION;
+        }
+
+        private int FromEnd(int relativePosition)
+        {
+            return _dbReader.Length - relativePosition;
         }
 
         public void Close()
@@ -284,37 +288,38 @@ namespace GeoIP
                 lock (_ioLock)
                 {
                     bool hasStructureInfo = false;
-                    byte[] delim = new byte[3];
+
                     // Advance to part of file where database info is stored.
-                    _dbReader.Seek(-3, SeekOrigin.End);
+                    int position = FromEnd(-3);
                     for (int i = 0; i < DbFlags.STRUCTURE_INFO_MAX_SIZE; i++)
                     {
-                        _dbReader.Read(delim, 0, 3);
+                        var delim = _dbReader.Read(position, 3);
+                        position += 3;
                         if (delim[0] == 255 && delim[1] == 255 && delim[2] == 255)
                         {
                             hasStructureInfo = true;
                             break;
                         }
-                        _dbReader.Seek(-4, SeekOrigin.Current);
+                        position += -4;
                     }
                     if (hasStructureInfo)
                     {
-                        _dbReader.Seek(-6, SeekOrigin.Current);
+                        position += -6;
                     }
                     else
                     {
                         // No structure info, must be pre Sep 2002 database, go back to end.
-                        _dbReader.Seek(-3, SeekOrigin.End);
+                        position += -3;
                     }
                     // Find the database info string.
                     for (int i = 0; i < DbFlags.DATABASE_INFO_MAX_SIZE; i++)
                     {
-                        _dbReader.Read(delim, 0, 3);
+                        var delim = _dbReader.Read(position, 3);
                         if (delim[0] == 0 && delim[1] == 0 && delim[2] == 0)
                         {
-                            byte[] dbInfo = new byte[i];
                             char[] dbInfo2 = new char[i];
-                            _dbReader.Read(dbInfo, 0, i);
+                            var dbInfo = _dbReader.Read(position, i);
+                            position += i;
                             for (int a0 = 0; a0 < i; a0++)
                             {
                                 dbInfo2[a0] = Convert.ToChar(dbInfo[a0]);
@@ -323,7 +328,7 @@ namespace GeoIP
                             _databaseInfo = new DatabaseInfo(new String(dbInfo2));
                             return _databaseInfo;
                         }
-                        _dbReader.Seek(-4, SeekOrigin.Current);
+                        position += -1;
                     }
                 }
             }
@@ -469,18 +474,15 @@ namespace GeoIP
                 {
                     return null;
                 }
-                int recordPointer = seekCountry + ((2 * _recordLength - 1) * _databaseSegments[0]);
 
-                lock (_ioLock)
-                {
-                    _dbReader.Seek(recordPointer, SeekOrigin.Begin);
-                    _dbReader.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
-                }
+                int recordPointer = seekCountry + ((2 * _recordLength - 1) * _databaseSegments[0]);
+                recordBuf = _dbReader.Read(recordPointer, DbFlags.FULL_RECORD_LENGTH);
 
                 for (int a0 = 0; a0 < DbFlags.FULL_RECORD_LENGTH; a0++)
                 {
                     recordBuf2[a0] = Convert.ToChar(recordBuf[a0]);
                 }
+
                 // get country
                 record.CountryCode = CountryConstants.CountryCodes[UnsignedByteToInt(recordBuf[0])];
                 record.CountryName = CountryConstants.CountryNames[UnsignedByteToInt(recordBuf[0])];
@@ -572,17 +574,13 @@ namespace GeoIP
                     return null;
                 }
                 int recordPointer = seekCountry + ((2 * _recordLength - 1) * _databaseSegments[0]);
-
-                lock (_ioLock)
-                {
-                    _dbReader.Seek(recordPointer, SeekOrigin.Begin);
-                    _dbReader.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
-                }
+                recordBuf = _dbReader.Read(recordPointer, DbFlags.FULL_RECORD_LENGTH);
 
                 for (int a0 = 0; a0 < DbFlags.FULL_RECORD_LENGTH; a0++)
                 {
                     recordBuf2[a0] = Convert.ToChar(recordBuf[a0]);
                 }
+
                 // get country
                 record.CountryCode = CountryConstants.CountryCodes[UnsignedByteToInt(recordBuf[0])];
                 record.CountryName = CountryConstants.CountryNames[UnsignedByteToInt(recordBuf[0])];
@@ -706,18 +704,14 @@ namespace GeoIP
                 }
 
                 int recordPointer = seekOrg + (2 * _recordLength - 1) * _databaseSegments[0];
-
-                lock (_ioLock)
-                {
-                    _dbReader.Seek(recordPointer, SeekOrigin.Begin);
-                    _dbReader.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
-                }
+                buf = _dbReader.Read(recordPointer, DbFlags.MAX_ORG_RECORD_LENGTH);
 
                 while (buf[strLength] != 0)
                 {
                     buf2[strLength] = Convert.ToChar(buf[strLength]);
                     strLength++;
                 }
+
                 buf2[strLength] = '\0';
                 String orgBuf = new String(buf2, 0, strLength);
                 return orgBuf;
@@ -745,12 +739,7 @@ namespace GeoIP
                 }
 
                 int recordPointer = seekOrg + (2 * _recordLength - 1) * _databaseSegments[0];
-
-                lock (_ioLock)
-                {
-                    _dbReader.Seek(recordPointer, SeekOrigin.Begin);
-                    _dbReader.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
-                }
+                buf = _dbReader.Read(recordPointer, DbFlags.MAX_ORG_RECORD_LENGTH);
 
                 while (buf[strLength] != 0)
                 {
@@ -779,11 +768,7 @@ namespace GeoIP
             {
                 try
                 {
-                    lock (_ioLock)
-                    {
-                        _dbReader.Seek(2 * _recordLength * offset, SeekOrigin.Begin);
-                        _dbReader.Read(buf, 0, 2 * DbFlags.MAX_RECORD_LENGTH);
-                    }
+                    buf = _dbReader.Read(2 * _recordLength * offset, DbFlags.MAX_RECORD_LENGTH);
                 }
                 catch (IOException)
                 {
@@ -841,11 +826,7 @@ namespace GeoIP
             {
                 try
                 {
-                    lock (_ioLock)
-                    {
-                        _dbReader.Seek(2 * _recordLength * offset, SeekOrigin.Begin);
-                        _dbReader.Read(buf, 0, 2 * DbFlags.MAX_RECORD_LENGTH);
-                    }
+                    buf = _dbReader.Read(2 * _recordLength * offset, 2 * DbFlags.MAX_RECORD_LENGTH);
                 }
                 catch (IOException)
                 {
