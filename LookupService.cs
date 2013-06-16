@@ -38,7 +38,6 @@ namespace GeoIP
 
         public LookupService(String databaseFile, int options)
         {
-
             _dbReader = options == LookupOptions.GEOIP_MEMORY_CACHE
                 ? new StreamDbReader(databaseFile)
                 : new CachedDbReader(databaseFile);
@@ -179,13 +178,11 @@ namespace GeoIP
             {
                 addr = IPAddress.Parse(ipAddress);
             }
-            //catch (UnknownHostException e) {
             catch (Exception e)
             {
                 Trace.WriteLine(e.Message);
                 return UnknownCountry;
             }
-            //  return getCountry(bytestoLong(addr.GetAddressBytes()));
             return GetCountry(BytestoLong(addr.GetAddressBytes()));
         }
 
@@ -193,9 +190,9 @@ namespace GeoIP
         {
             if (_dbReader == null)
             {
-                //throw new IllegalStateException("Database has been closed.");
                 throw new Exception("Database has been closed.");
             }
+
             if ((_databaseType == DatabaseTypeCodes.CITY_EDITION_REV1) |
                 (_databaseType == DatabaseTypeCodes.CITY_EDITION_REV0))
             {
@@ -220,7 +217,6 @@ namespace GeoIP
         {
             if (_dbReader == null)
             {
-                //throw new IllegalStateException("Database has been closed.");
                 throw new Exception("Database has been closed.");
             }
             if ((_databaseType == DatabaseTypeCodes.CITY_EDITION_REV1) |
