@@ -40,18 +40,9 @@ namespace GeoIP
         {
             try
             {
-                lock (_ioLock)
-                {
-                    if (options == LookupOptions.GEOIP_MEMORY_CACHE)
-                    {
-                        _dbReader = new StreamDbReader(databaseFile);
-                    }
-                    else
-                    {
-                        _dbReader = new CachedDbReader(databaseFile);
-                    }
-
-                }
+                _dbReader = options == LookupOptions.GEOIP_MEMORY_CACHE 
+                    ? new StreamDbReader(databaseFile) 
+                    : new CachedDbReader(databaseFile);
 
                 Init();
             }
