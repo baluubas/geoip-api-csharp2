@@ -27,14 +27,12 @@ namespace GeoIP
 {
     public class LookupService
     {
-        private DbReader _dbReader;
+        private IDbReader _dbReader;
         private DatabaseInfo _databaseInfo;
         private readonly Object _ioLock = new Object();
         private byte _databaseType = Convert.ToByte(DatabaseTypeCodes.COUNTRY_EDITION);
         private int[] _databaseSegments;
         private int _recordLength;
-        private readonly int _dboptions;
-        private byte[] _dbbuffer;
 
         private static readonly Country UnknownCountry = new Country("--", "N/A");
 
@@ -44,9 +42,17 @@ namespace GeoIP
             {
                 lock (_ioLock)
                 {
-                    _dbReader = new DbReader(new FileStream(databaseFile, FileMode.Open, FileAccess.Read));
+                    if (options == LookupOptions.GEOIP_MEMORY_CACHE)
+                    {
+                        _dbReader = new StreamDbReader(databaseFile);
+                    }
+                    else
+                    {
+                        _dbReader = new CachedDbReader(databaseFile);
+                    }
+
                 }
-                _dboptions = options;
+
                 Init();
             }
             catch (SystemException)
@@ -66,7 +72,7 @@ namespace GeoIP
             byte[] buf = new byte[DbFlags.SEGMENT_RECORD_LENGTH];
             _databaseType = DatabaseTypeCodes.COUNTRY_EDITION;
             _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
-       
+
             lock (_ioLock)
             {
                 _dbReader.Seek(-3, SeekOrigin.End);
@@ -131,7 +137,7 @@ namespace GeoIP
                             int j;
                             for (j = 0; j < DbFlags.SEGMENT_RECORD_LENGTH; j++)
                             {
-                                _databaseSegments[0] += (UnsignedByteToInt(buf[j]) << (j*8));
+                                _databaseSegments[0] += (UnsignedByteToInt(buf[j]) << (j * 8));
                             }
                         }
                         break;
@@ -148,15 +154,6 @@ namespace GeoIP
                     _databaseSegments[0] = DbFlags.COUNTRY_BEGIN;
                     _recordLength = DbFlags.STANDARD_RECORD_LENGTH;
                 }
-                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) != 1)
-                {
-                    return;
-                }
-
-                int l = (int)_dbReader.Length;
-                _dbbuffer = new byte[l];
-                _dbReader.Seek(0, SeekOrigin.Begin);
-                _dbReader.Read(_dbbuffer, 0, l);
             }
         }
 
@@ -181,7 +178,7 @@ namespace GeoIP
             {
                 addr = IPAddress.Parse(ipAddress);
             }
-             
+
             catch (Exception e)
             {
                 Trace.WriteLine(e.Message);
@@ -197,7 +194,7 @@ namespace GeoIP
             {
                 addr = IPAddress.Parse(ipAddress);
             }
-                //catch (UnknownHostException e) {
+            //catch (UnknownHostException e) {
             catch (Exception e)
             {
                 Trace.WriteLine(e.Message);
@@ -222,7 +219,7 @@ namespace GeoIP
                 {
                     return UnknownCountry;
                 }
-                
+
                 return new Country(l.CountryCode, l.CountryName);
             }
             int ret = SeekCountryV6(ipAddress) - DbFlags.COUNTRY_BEGIN;
@@ -230,7 +227,7 @@ namespace GeoIP
             {
                 return UnknownCountry;
             }
-            
+
             return new Country(CountryConstants.CountryCodes[ret], CountryConstants.CountryNames[ret]);
         }
 
@@ -251,15 +248,15 @@ namespace GeoIP
                 }
 
                 return new Country(l.CountryCode, l.CountryName);
-                
+
             }
-            
+
             int ret = SeekCountry(ipAddress) - DbFlags.COUNTRY_BEGIN;
             if (ret == 0)
             {
                 return UnknownCountry;
             }
-                
+
             return new Country(CountryConstants.CountryCodes[ret], CountryConstants.CountryNames[ret]);
         }
 
@@ -390,8 +387,8 @@ namespace GeoIP
                 {
                     record.CountryCode = "US";
                     record.CountryName = "United States";
-                    ch[0] = (char) (((seekRegion - 1000)/26) + 65);
-                    ch[1] = (char) (((seekRegion - 1000)%26) + 65);
+                    ch[0] = (char)(((seekRegion - 1000) / 26) + 65);
+                    ch[1] = (char)(((seekRegion - 1000) % 26) + 65);
                     record.Name = new String(ch);
                 }
                 else
@@ -415,22 +412,22 @@ namespace GeoIP
                 {
                     record.CountryCode = "US";
                     record.CountryName = "United States";
-                    ch[0] = (char) (((seekRegion - DbFlags.US_OFFSET)/26) + 65);
-                    ch[1] = (char) (((seekRegion - DbFlags.US_OFFSET)%26) + 65);
+                    ch[0] = (char)(((seekRegion - DbFlags.US_OFFSET) / 26) + 65);
+                    ch[1] = (char)(((seekRegion - DbFlags.US_OFFSET) % 26) + 65);
                     record.Name = new String(ch);
                 }
                 else if (seekRegion < DbFlags.WORLD_OFFSET)
                 {
                     record.CountryCode = "CA";
                     record.CountryName = "Canada";
-                    ch[0] = (char) (((seekRegion - DbFlags.CANADA_OFFSET)/26) + 65);
-                    ch[1] = (char) (((seekRegion - DbFlags.CANADA_OFFSET)%26) + 65);
+                    ch[0] = (char)(((seekRegion - DbFlags.CANADA_OFFSET) / 26) + 65);
+                    ch[1] = (char)(((seekRegion - DbFlags.CANADA_OFFSET) % 26) + 65);
                     record.Name = new String(ch);
                 }
                 else
                 {
-                    record.CountryCode = CountryConstants.CountryCodes[(seekRegion - DbFlags.WORLD_OFFSET)/DbFlags.FIPS_RANGE];
-                    record.CountryName = CountryConstants.CountryNames[(seekRegion - DbFlags.WORLD_OFFSET)/DbFlags.FIPS_RANGE];
+                    record.CountryCode = CountryConstants.CountryCodes[(seekRegion - DbFlags.WORLD_OFFSET) / DbFlags.FIPS_RANGE];
+                    record.CountryName = CountryConstants.CountryNames[(seekRegion - DbFlags.WORLD_OFFSET) / DbFlags.FIPS_RANGE];
                     record.Name = "";
                 }
             }
@@ -491,20 +488,14 @@ namespace GeoIP
                 {
                     return null;
                 }
-                int recordPointer = seekCountry + ((2*_recordLength - 1)*_databaseSegments[0]);
-                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                int recordPointer = seekCountry + ((2 * _recordLength - 1) * _databaseSegments[0]);
+
+                lock (_ioLock)
                 {
-                    Array.Copy(_dbbuffer, recordPointer, recordBuf, 0,
-                               Math.Min(_dbbuffer.Length - recordPointer, DbFlags.FULL_RECORD_LENGTH));
+                    _dbReader.Seek(recordPointer, SeekOrigin.Begin);
+                    _dbReader.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
                 }
-                else
-                {
-                    lock (_ioLock)
-                    {
-                        _dbReader.Seek(recordPointer, SeekOrigin.Begin);
-                        _dbReader.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
-                    }
-                }
+
                 for (int a0 = 0; a0 < DbFlags.FULL_RECORD_LENGTH; a0++)
                 {
                     recordBuf2[a0] = Convert.ToChar(recordBuf[a0]);
@@ -549,14 +540,14 @@ namespace GeoIP
                 // get latitude
                 int j;
                 for (j = 0; j < 3; j++)
-                    latitude += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j*8));
-                record.Latitude = (float) latitude/10000 - 180;
+                    latitude += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j * 8));
+                record.Latitude = (float)latitude / 10000 - 180;
                 recordBufOffset += 3;
 
                 // get longitude
                 for (j = 0; j < 3; j++)
-                    longitude += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j*8));
-                record.Longitude = (float) longitude/10000 - 180;
+                    longitude += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j * 8));
+                record.Longitude = (float)longitude / 10000 - 180;
 
                 record.MetroCode = record.DmaCode = 0;
                 record.AreaCode = 0;
@@ -569,9 +560,9 @@ namespace GeoIP
                     {
                         recordBufOffset += 3;
                         for (j = 0; j < 3; j++)
-                            metroareaCombo += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j*8));
-                        record.MetroCode = record.DmaCode = metroareaCombo/1000;
-                        record.AreaCode = metroareaCombo%1000;
+                            metroareaCombo += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j * 8));
+                        record.MetroCode = record.DmaCode = metroareaCombo / 1000;
+                        record.AreaCode = metroareaCombo % 1000;
                     }
                 }
             }
@@ -599,20 +590,14 @@ namespace GeoIP
                 {
                     return null;
                 }
-                int recordPointer = seekCountry + ((2*_recordLength - 1)*_databaseSegments[0]);
-                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                int recordPointer = seekCountry + ((2 * _recordLength - 1) * _databaseSegments[0]);
+
+                lock (_ioLock)
                 {
-                    Array.Copy(_dbbuffer, recordPointer, recordBuf, 0,
-                               Math.Min(_dbbuffer.Length - recordPointer, DbFlags.FULL_RECORD_LENGTH));
+                    _dbReader.Seek(recordPointer, SeekOrigin.Begin);
+                    _dbReader.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
                 }
-                else
-                {
-                    lock (_ioLock)
-                    {
-                        _dbReader.Seek(recordPointer, SeekOrigin.Begin);
-                        _dbReader.Read(recordBuf, 0, DbFlags.FULL_RECORD_LENGTH);
-                    }
-                }
+
                 for (int a0 = 0; a0 < DbFlags.FULL_RECORD_LENGTH; a0++)
                 {
                     recordBuf2[a0] = Convert.ToChar(recordBuf[a0]);
@@ -657,14 +642,14 @@ namespace GeoIP
                 // get latitude
                 int j;
                 for (j = 0; j < 3; j++)
-                    latitude += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j*8));
-                record.Latitude = (float) latitude/10000 - 180;
+                    latitude += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j * 8));
+                record.Latitude = (float)latitude / 10000 - 180;
                 recordBufOffset += 3;
 
                 // get longitude
                 for (j = 0; j < 3; j++)
-                    longitude += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j*8));
-                record.Longitude = (float) longitude/10000 - 180;
+                    longitude += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j * 8));
+                record.Longitude = (float)longitude / 10000 - 180;
 
                 record.MetroCode = record.DmaCode = 0;
                 record.AreaCode = 0;
@@ -676,9 +661,9 @@ namespace GeoIP
                     {
                         recordBufOffset += 3;
                         for (j = 0; j < 3; j++)
-                            metroareaCombo += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j*8));
-                        record.MetroCode = record.DmaCode = metroareaCombo/1000;
-                        record.AreaCode = metroareaCombo%1000;
+                            metroareaCombo += (UnsignedByteToInt(recordBuf[recordBufOffset + j]) << (j * 8));
+                        record.MetroCode = record.DmaCode = metroareaCombo / 1000;
+                        record.AreaCode = metroareaCombo % 1000;
                     }
                 }
             }
@@ -739,20 +724,14 @@ namespace GeoIP
                     return null;
                 }
 
-                int recordPointer = seekOrg + (2*_recordLength - 1)*_databaseSegments[0];
-                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                int recordPointer = seekOrg + (2 * _recordLength - 1) * _databaseSegments[0];
+
+                lock (_ioLock)
                 {
-                    Array.Copy(_dbbuffer, recordPointer, buf, 0,
-                               Math.Min(_dbbuffer.Length - recordPointer, DbFlags.MAX_ORG_RECORD_LENGTH));
+                    _dbReader.Seek(recordPointer, SeekOrigin.Begin);
+                    _dbReader.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
                 }
-                else
-                {
-                    lock (_ioLock)
-                    {
-                        _dbReader.Seek(recordPointer, SeekOrigin.Begin);
-                        _dbReader.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
-                    }
-                }
+
                 while (buf[strLength] != 0)
                 {
                     buf2[strLength] = Convert.ToChar(buf[strLength]);
@@ -784,20 +763,14 @@ namespace GeoIP
                     return null;
                 }
 
-                int recordPointer = seekOrg + (2*_recordLength - 1)*_databaseSegments[0];
-                if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                int recordPointer = seekOrg + (2 * _recordLength - 1) * _databaseSegments[0];
+
+                lock (_ioLock)
                 {
-                    Array.Copy(_dbbuffer, recordPointer, buf, 0,
-                               Math.Min(_dbbuffer.Length - recordPointer, DbFlags.MAX_ORG_RECORD_LENGTH));
+                    _dbReader.Seek(recordPointer, SeekOrigin.Begin);
+                    _dbReader.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
                 }
-                else
-                {
-                    lock (_ioLock)
-                    {
-                        _dbReader.Seek(recordPointer, SeekOrigin.Begin);
-                        _dbReader.Read(buf, 0, DbFlags.MAX_ORG_RECORD_LENGTH);
-                    }
-                }
+
                 while (buf[strLength] != 0)
                 {
                     buf2[strLength] = Convert.ToChar(buf[strLength]);
@@ -818,27 +791,17 @@ namespace GeoIP
         private int SeekCountryV6(IPAddress ipAddress)
         {
             byte[] v6Vec = ipAddress.GetAddressBytes();
-            byte[] buf = new byte[2*DbFlags.MAX_RECORD_LENGTH];
+            byte[] buf = new byte[2 * DbFlags.MAX_RECORD_LENGTH];
             int[] x = new int[2];
             int offset = 0;
             for (int depth = 127; depth >= 0; depth--)
             {
                 try
                 {
-                    if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                    lock (_ioLock)
                     {
-                        for (int i = 0; i < (2*DbFlags.MAX_RECORD_LENGTH); i++)
-                        {
-                            buf[i] = _dbbuffer[i + (2*_recordLength*offset)];
-                        }
-                    }
-                    else
-                    {
-                        lock (_ioLock)
-                        {
-                            _dbReader.Seek(2 * _recordLength * offset, SeekOrigin.Begin);
-                            _dbReader.Read(buf, 0, 2 * DbFlags.MAX_RECORD_LENGTH);
-                        }
+                        _dbReader.Seek(2 * _recordLength * offset, SeekOrigin.Begin);
+                        _dbReader.Read(buf, 0, 2 * DbFlags.MAX_RECORD_LENGTH);
                     }
                 }
                 catch (IOException)
@@ -850,12 +813,12 @@ namespace GeoIP
                     x[i] = 0;
                     for (int j = 0; j < _recordLength; j++)
                     {
-                        int y = buf[(i*_recordLength) + j];
+                        int y = buf[(i * _recordLength) + j];
                         if (y < 0)
                         {
                             y += 256;
                         }
-                        x[i] += (y << (j*8));
+                        x[i] += (y << (j * 8));
                     }
                 }
 
@@ -890,27 +853,17 @@ namespace GeoIP
         [MethodImpl(MethodImplOptions.Synchronized)]
         private int SeekCountry(long ipAddress)
         {
-            byte[] buf = new byte[2*DbFlags.MAX_RECORD_LENGTH];
+            byte[] buf = new byte[2 * DbFlags.MAX_RECORD_LENGTH];
             int[] x = new int[2];
             int offset = 0;
             for (int depth = 31; depth >= 0; depth--)
             {
                 try
                 {
-                    if ((_dboptions & LookupOptions.GEOIP_MEMORY_CACHE) == 1)
+                    lock (_ioLock)
                     {
-                        for (int i = 0; i < (2*DbFlags.MAX_RECORD_LENGTH); i++)
-                        {
-                            buf[i] = _dbbuffer[i + (2*_recordLength*offset)];
-                        }
-                    }
-                    else
-                    {
-                        lock (_ioLock)
-                        {
-                            _dbReader.Seek(2 * _recordLength * offset, SeekOrigin.Begin);
-                            _dbReader.Read(buf, 0, 2 * DbFlags.MAX_RECORD_LENGTH);
-                        }
+                        _dbReader.Seek(2 * _recordLength * offset, SeekOrigin.Begin);
+                        _dbReader.Read(buf, 0, 2 * DbFlags.MAX_RECORD_LENGTH);
                     }
                 }
                 catch (IOException)
@@ -922,12 +875,12 @@ namespace GeoIP
                     x[i] = 0;
                     for (int j = 0; j < _recordLength; j++)
                     {
-                        int y = buf[(i*_recordLength) + j];
+                        int y = buf[(i * _recordLength) + j];
                         if (y < 0)
                         {
                             y += 256;
                         }
-                        x[i] += (y << (j*8));
+                        x[i] += (y << (j * 8));
                     }
                 }
 
@@ -965,7 +918,7 @@ namespace GeoIP
                 {
                     y += 256;
                 }
-                ipnum += y << ((3 - i)*8);
+                ipnum += y << ((3 - i) * 8);
             }
             return ipnum;
         }

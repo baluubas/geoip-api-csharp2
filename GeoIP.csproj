@@ -45,6 +45,8 @@
     <Compile Include="DatabaseTypeCodes.cs" />
     <Compile Include="DbFlags.cs" />
     <Compile Include="DbReader.cs" />
+    <Compile Include="StreamDbReader.cs" />
+    <Compile Include="IDbReader.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="LookupOptions.cs" />
     <Compile Include="LookupService.cs" />
