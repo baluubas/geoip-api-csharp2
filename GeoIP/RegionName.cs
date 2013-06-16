@@ -43,7 +43,7 @@ namespace GeoIP
 
             while (string.IsNullOrWhiteSpace(line) == false)
             {
-                string[] parts = line.Trim().Split();
+                string[] parts = line.Trim().Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
                 string id = parts[0];
                 string name = parts[1];
 

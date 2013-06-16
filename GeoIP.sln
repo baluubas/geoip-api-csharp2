@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoIP", "GeoIP.csproj", "{0679A029-0DF7-45C8-808D-EBB62576A1F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoIP", "GeoIP\GeoIP.csproj", "{0679A029-0DF7-45C8-808D-EBB62576A1F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoIP.Test", "GeoIP.Test\GeoIP.Test.csproj", "{612583FB-E2D4-487B-889D-10B0F24EF717}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +15,10 @@ Global
 		{0679A029-0DF7-45C8-808D-EBB62576A1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0679A029-0DF7-45C8-808D-EBB62576A1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0679A029-0DF7-45C8-808D-EBB62576A1F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{612583FB-E2D4-487B-889D-10B0F24EF717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{612583FB-E2D4-487B-889D-10B0F24EF717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{612583FB-E2D4-487B-889D-10B0F24EF717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{612583FB-E2D4-487B-889D-10B0F24EF717}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
