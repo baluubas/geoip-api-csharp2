@@ -36,11 +36,20 @@ namespace GeoIP
 
         private static readonly Country UnknownCountry = new Country("--", "N/A");
 
-        public LookupService(String databaseFile, int options)
+        public LookupService(String databaseFile, LookupOptions options)
         {
             _dbReader = options == LookupOptions.GEOIP_MEMORY_CACHE
                 ? new StreamDbReader(databaseFile)
                 : new CachedDbReader(databaseFile);
+
+            Init();
+        }
+
+        public LookupService(Stream stream, LookupOptions options)
+        {
+            _dbReader = options == LookupOptions.GEOIP_MEMORY_CACHE
+                ? new StreamDbReader(stream)
+                : new CachedDbReader(stream);
 
             Init();
         }

@@ -42,10 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LookupServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionNameTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GeoIP.dat" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
